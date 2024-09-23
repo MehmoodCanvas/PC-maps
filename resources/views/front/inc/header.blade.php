@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{asset('assets/front/css/responsive.css')}}" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <link href='https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.css' rel='stylesheet' />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 

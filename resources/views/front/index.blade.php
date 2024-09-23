@@ -61,13 +61,8 @@
 
             </div>
         </nav>
-        <link href='https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.css' rel='stylesheet' />
-        <script src='https://api.mapbox.com/mapbox-gl-js/v1.13.1/mapbox-gl.js'></script>
-        <script src="https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.js"></script>
-        <script src="{{asset('assets/front/js/static.js?v=1')}}"></script>
 
-
-@include('front.inc.footer')
+        @include('front.inc.footer')
     </body>
 
     </html>
