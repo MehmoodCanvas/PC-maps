@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\Main;
+use App\Http\Controllers\Front\Opearation;
+use App\Http\Middleware\EnsureLogin;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +16,10 @@ use App\Http\Controllers\Front\Main;
 |
 */
 
-Route::get('/', [Main::class,'index']);
-Route::post('/save-image', [Main::class,'save']);
+Route::get('/login', [Main::class,'login']);
+Route::get('/signup', [Main::class,'signup']);
 
-
+Route::middleware([EnsureLogin::class])->group(function () {
+    Route::get('/create-map', [Main::class,'index']);
+    Route::post('/save-image', [Opearation::class,'save']);
+});
