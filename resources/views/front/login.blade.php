@@ -8,7 +8,8 @@
         </div>
     </div>
     <div class="register_right_col">
-        <form action="" class="w-100">
+        <form action="{{url('post-login')}}" class="w-100">
+            @csrf
             <div class="register_first_wrap_text">
                 <img src="assets/front/images/logo.png" class="img-fluid" alt="">
                 <h3>Login</h3>
@@ -16,11 +17,11 @@
             </div>
             <div class="register_first_wrap_input">
                 <label>Email Address</label>
-                <input type="text" placeholder="Enter Your Email Address">
+                <input type="text" placeholder="Enter Your Email Address" name="customer_email" required>
             </div>
             <div class="register_first_wrap_input">
                 <label>Password</label>
-                <input type="password" id="password-field" placeholder="Enter Your Password">
+                <input type="password" id="password-field"  name="customer_password"  placeholder="Enter Your Password" required>
                 <span toggle="#password-field" class="fa fa-fw field-icon toggle-password fa-eye"></span>
             </div>
             <div class="register_first_wrap_flex">
@@ -39,7 +40,7 @@
                 <button type="submit" class="common_btn_dark w-100 justify-content-center">Login Now<i class="fa-solid fa-arrow-right"></i></button>
             </div>
             <div class="register_first_wrap_bottom_text">
-                <p>Don't Have An Account? <a href="signup.php">Sign Up Now</a></p>
+                <p>Don't Have An Account? <a href="{{url('signup')}}">Sign Up Now</a></p>
             </div>
         </form>
     </div>

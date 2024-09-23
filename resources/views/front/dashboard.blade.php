@@ -181,9 +181,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($maps as $map)
+                                        
                                     <tr>
                                         <th scope="row">Elsa Robert</th>
-                                        <td>House Cleaning</td>
+                                        <td><img src="{{$map->map_data}}" alt=""></td>
                                         <td>mm/dd/yyyy</td>
                                         <td>
                                             <ul>
@@ -196,81 +198,8 @@
                                         </td>
                                         <td><a href="#!" class="yellowp">Pending</a></td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">Will Smith</th>
-                                        <td>Associate Engineer</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">George Andrew</th>
-                                        <td>Plumber</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">John Albert</th>
-                                        <td>Design</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="greenp">Delivered</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Harry Lington</th>
-                                        <td>Administrative</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Will Smith</th>
-                                        <td>Handyman</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
+                                    @endforeach
+
                                 </tbody>
                             </table>
                         </div>
