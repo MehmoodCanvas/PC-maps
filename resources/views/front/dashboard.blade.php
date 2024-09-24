@@ -6,12 +6,12 @@
     <title>PC Maps</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
     <meta name="robots" content="noindex" />
-	<link rel="icon" href="assets/front/images/favicon.ico">
-    <link rel="stylesheet" href="assets/front/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/front/css/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="assets/front/css/all.css">
-    <link rel="stylesheet" href="assets/front/css/main.css">
-    <link rel="stylesheet" href="assets/front/css/responsive.css">
+	<link rel="icon" href="{{asset('assets/front/images/favicon.ico')}}">
+    <link rel="stylesheet" href="{{asset('assets/front/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/front/css/swiper-bundle.min.css')}}" />
+    <link rel="stylesheet" href="{{asset('assets/front/css/all.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/front/css/main.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/front/css/responsive.css')}}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -20,18 +20,18 @@
     <header class="header_main_wrapper">
         <div class="header_main_wrap_f">
             <div class="header_main_wrap_logo">
-                <img src="assets/front/images/logo.png" class="img-fluid" alt="">
+                <img src="{{asset('assets/front/images/logo.png')}}" class="img-fluid" alt="">
             </div>
             <div class="dashboard-main-th-userm-f">
                 <div class="dashboard-main-th-user-f">
                     <div class="dashboard-main-th-user-img">
-                        <img src="assets/front/images/d-user-icon.png" class="img-fluid" alt="">
+                        <img src="{{asset('assets/front/images/d-user-icon.png')}}" class="img-fluid" alt="">
                     </div>
                     <div class="dashboard-main-th-user-name">
                         <p>{{Auth::guard('customer')->user()->customer_name}} <i class="fa-solid fa-chevron-down"></i></p>
                     </div>
                     <div class="d-logout-Drop">
-                        <button data-bs-toggle="modal" data-bs-target="#logOut"><img src="assets/front/images/logout-ico.png" class="img-fluid" alt=""> Logout</button>
+                        <a href="{{url('logout')}}" data-bs-toggle="modal" data-bs-target="#logOut"><img src="{{asset("assets/front/images/logout-ico.png")}}" class="img-fluid" alt=""> Logout</a>
                     </div>
                 </div>
             </div>
@@ -42,9 +42,9 @@
         <div class="dashboard_side_bar">
             <div class="d-flex align-items-start">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link active" id="v-pills-Management-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Management" type="button" role="tab" aria-controls="v-pills-Management" aria-selected="true"><img src="assets/front/images/d_ico3.png" class="img-fluid" alt="">Orders</button>
-                    <button class="nav-link" id="v-pills-Jobs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Jobs" type="button" role="tab" aria-controls="v-pills-Jobs" aria-selected="false"><img src="assets/front/images/d_ico1.png" class="img-fluid" alt="">My Maps</button>
-                    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><img src="assets/front/images/d_ico5.png" class="img-fluid" alt=""> Settings</button>
+                    <button class="nav-link active" id="v-pills-Management-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Management" type="button" role="tab" aria-controls="v-pills-Management" aria-selected="true"><img src="{{asset('assets/front/images/d_ico3.png')}}" class="img-fluid" alt="">Orders</button>
+                    <button class="nav-link" id="v-pills-Jobs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Jobs" type="button" role="tab" aria-controls="v-pills-Jobs" aria-selected="false"><img src="{{asset('assets/front/images/d_ico1.png')}}" class="img-fluid" alt="">My Maps</button>
+                    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><img src="{{asset('assets/front/images/d_ico5.png')}}" class="img-fluid" alt=""> Settings</button>
                 </div>
             </div>
         </div>
@@ -245,12 +245,12 @@
     </footer>
 
 
-<script src="assets/front/js/bootstrap.min.js"></script>
-<script src="assets/front/js/jquery-3.6.3.min.js"></script>
+<script src="{{asset('assets/front/js/bootstrap.min.js')}}"></script>
+<script src="{{asset('assets/front/js/jquery-3.6.3.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
-<script src="assets/front/js/swiper-bundle.min.js"></script>
-<script src="assets/front/js/custom.js"></script>
+<script src="{{asset('assets/front/js/swiper-bundle.min.js')}}"></script>
+<script src="{{asset('assets/front/js/custom.js')}}"></script>
 
 
 <script>

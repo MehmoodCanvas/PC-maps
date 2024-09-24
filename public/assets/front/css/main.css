@@ -307,7 +307,7 @@ body::-webkit-scrollbar-thumb {
     padding: 0;
     overflow: hidden;
 }
-.d-logout-Drop button{
+.d-logout-Drop a{
 	background-color: transparent;
     color: #000000;
 	font-size: 16px;
@@ -318,11 +318,11 @@ body::-webkit-scrollbar-thumb {
 	width: 100%;
 	padding: 10px 10px;
 }
-.d-logout-Drop button:hover {
+.d-logout-Drop a:hover {
     color: #ffffff;
     background-color: #06b1d7 !important;
 }
-.d-logout-Drop button:hover img {
+.d-logout-Drop a:hover img {
     filter: brightness(10) invert(1);
 }
 .bb-none{
