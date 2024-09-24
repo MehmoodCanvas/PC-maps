@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\Main;
 use App\Http\Controllers\Front\Opearation;
 use App\Http\Controllers\Front\Account;
-
 use App\Http\Middleware\EnsureLogin;
 
 /*

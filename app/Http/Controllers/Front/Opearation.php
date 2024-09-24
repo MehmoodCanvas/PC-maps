@@ -60,6 +60,7 @@ class Opearation extends Controller
                    'intent' => 'CAPTURE',
                    'purchase_units' => [
                        [
+                        
                            'amount' => [
                                'currency_code' => 'USD',
                                'value' => '100.00',  

@@ -10,7 +10,7 @@
         />
         <title>PayPal JS SDK Advanced Integration - Checkout Flow</title>
         <script
-            src="https://www.paypal.com/sdk/js?client-id=AYOeyCQvilLVKJGjslZfFSi_Nkl7A6OfXNarj5lS55iUcQXMhpp3AypVjAVkS_qvPcO5D415b9SnBFuN&buyer-country=US&currency=USD&components=buttons,card-fields&enable-funding=venmo"
+            src="https://www.paypal.com/sdk/js?client-id=AcfyQW_yPIfAZNZ_9Y-E_LtG-Xjh-nRZjRcCt0PbLlth56dgTON7RkDVrnkN3G2jt6fzK2f-rAHa0qvM&buyer-country=US&currency=USD&components=buttons,card-fields&enable-funding=venmo"
             data-sdk-integration-source="developer-studio"
         ></script>
     </head>
@@ -228,7 +228,6 @@ async function onApproveCallback(data) {
         console.error(error);
     }
 }
-// Example function to show a result to the user. Your site's UI library can be used instead.
 function resultMessage(message) {
     const container = document.querySelector("#result-message");
     container.innerHTML = message;
