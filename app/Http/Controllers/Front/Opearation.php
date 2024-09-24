@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Image\Image;
+use Illuminate\Support\Facades\Http;
 
 class Opearation extends Controller
 {
@@ -40,4 +41,53 @@ class Opearation extends Controller
         return response()->json(['message' => 'Image saved successfully', 'filename' => $total]);
     
        }
-}
+
+       public function createOrder(Request $request)
+       {
+           $clientID = env('PAYPAL_CLIENT_ID');
+           $secret = env('PAYPAL_SECRET');
+           
+           $response = Http::withBasicAuth($clientID, $secret)
+               ->asForm()
+               ->post('https://api-m.sandbox.paypal.com/v1/oauth2/token', [
+                   'grant_type' => 'client_credentials',
+               ]);
+   
+           $accessToken = $response->json()['access_token'];
+   
+           $order = Http::withToken($accessToken)
+               ->post('https://api-m.sandbox.paypal.com/v2/checkout/orders', [
+                   'intent' => 'CAPTURE',
+                   'purchase_units' => [
+                       [
+                           'amount' => [
+                               'currency_code' => 'USD',
+                               'value' => '100.00',  
+                           ],
+                       ],
+                   ],
+               ]);
+   
+           return response()->json($order->json());
+       }
+   
+       public function captureOrder($orderID)
+       {
+           $clientID = env('PAYPAL_CLIENT_ID');
+           $secret = env('PAYPAL_SECRET');
+           
+           $response = Http::withBasicAuth($clientID, $secret)
+               ->asForm()
+               ->post('https://api-m.sandbox.paypal.com/v1/oauth2/token', [
+                   'grant_type' => 'client_credentials',
+               ]);
+   
+           $accessToken = $response->json()['access_token'];
+   
+           $capture = Http::withToken($accessToken)
+               ->post("https://api-m.sandbox.paypal.com/v2/checkout/orders/{$orderID}/capture");
+   
+           return response()->json($capture->json());
+       }
+
+    }

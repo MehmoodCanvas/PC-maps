@@ -20,6 +20,7 @@ use App\Http\Middleware\EnsureLogin;
 
 Route::get('/login', [Main::class,'login']);
 Route::get('/signup', [Main::class,'signup']);
+Route::get('/checkout', [Main::class,'checkout']);
 Route::POST('/post-login', [Account::class,'login']);
 Route::POST('/post-signup', [Account::class,'register']);
 
@@ -27,4 +28,6 @@ Route::middleware([EnsureLogin::class])->group(function () {
     Route::get('/dashboard', [Main::class,'dashboard']);
     Route::get('/create-map', [Main::class,'index']);
     Route::post('/save-image', [Opearation::class,'save']);
+    Route::post('/post-create-order', [Opearation::class,'createOrder']);
+
 });

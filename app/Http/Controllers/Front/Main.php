@@ -24,6 +24,11 @@ class Main extends Controller
       return view('front.login');
 
    }
+
+   public function checkout(){
+      return view('front.checkout');
+      
+   }
    public function dashboard(){
       $maps = DB::table('map')->where('map_customer_id',Auth::guard('customer')->user()->customer_id)->orderBy('map_id',"DESC")->get();
       return view('front.dashboard',compact('maps'));
