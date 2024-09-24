@@ -28,7 +28,7 @@
                         <img src="assets/front/images/d-user-icon.png" class="img-fluid" alt="">
                     </div>
                     <div class="dashboard-main-th-user-name">
-                        <p>Elsa Robert <i class="fa-solid fa-chevron-down"></i></p>
+                        <p>{{Auth::guard('customer')->user()->customer_name}} <i class="fa-solid fa-chevron-down"></i></p>
                     </div>
                     <div class="d-logout-Drop">
                         <button data-bs-toggle="modal" data-bs-target="#logOut"><img src="assets/front/images/logout-ico.png" class="img-fluid" alt=""> Logout</button>
@@ -54,7 +54,6 @@
                     <div class="d_content_main_wrap">
                         <div class="d_content_main_heading">
                             <h6>Orders</h6>
-                            <button class="common_btn_dark">Add New <i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                         <div class="d_content_main_box_table_m">
                             <table class="table" id="myTable">
@@ -167,36 +166,28 @@
                     <div class="d_content_main_wrap">
                         <div class="d_content_main_heading">
                             <h6>My Maps</h6>
-                            <button class="common_btn_dark">Add New <i class="fa-solid fa-arrow-right"></i></button>
+                            <a href="{{url('create-map')}}" class="common_btn_dark">Add New <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                         <div class="d_content_main_box_table_m">
                             <table class="table" id="myTable1">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Profile</th>
-                                        <th scope="col">Designation</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Stars</th>
-                                        <th scope="col">Status</th>
+                                        <th scope="col">Map</th>
+                                        <th scope="col">Widhth</th>
+                                        <th scope="col">Height</th>
+                                        <th scope="col">Price</th>
+                            
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($maps as $map)
                                         
                                     <tr>
-                                        <th scope="row">Elsa Robert</th>
-                                        <td><img src="{{$map->map_data}}" alt=""></td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
+                                        <th scope="row"><img src="{{$map->map_data}}" alt=""></th>
+                                        <td>{{$map->map_width}}</td>
+                                        <td>{{$map->map_height}}</td>
+                                        <td>${{$map->map_price}}</td>
+                                       
                                     </tr>
                                     @endforeach
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class Account extends Controller
 {
@@ -28,11 +29,12 @@ class Account extends Controller
        }; 
     }
 
-    public function login(Request $requst){
+    public function login(Request $request){
       $customer=DB::table('customer')->where('customer_email',$request->customer_email)->first();
       if($customer){
           $password=Hash::check($request->customer_password, $customer->customer_password);
           if($password){
+            $customerdata=Customer::find($customer->customer_id);
               Auth::guard('customer')->login($customerdata);
               if(Auth::guard('customer')->check()){
                   return redirect(url('/create-map'));

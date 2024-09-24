@@ -389,3 +389,18 @@ a#downloadLink {
 	border: solid;
 	color: white;
 	}
+	.top_db_btn {
+		position: absolute;
+		top: 14px;
+		left: 110px;
+		z-index: 999;
+	}
+	.top_db_btn a {
+		background-color: rgba(255, 255, 255, 0.8);
+		padding: 5px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		font-size: 14px;
+		color: #000;
+		text-decoration: none;
+	}

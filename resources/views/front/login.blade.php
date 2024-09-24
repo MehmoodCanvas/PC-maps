@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="register_right_col">
-        <form action="{{url('post-login')}}" class="w-100">
+        <form action="{{url('post-login')}}" class="w-100" method="POST">
             @csrf
             <div class="register_first_wrap_text">
                 <img src="assets/front/images/logo.png" class="img-fluid" alt="">

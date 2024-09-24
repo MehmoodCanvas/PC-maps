@@ -17,6 +17,12 @@ use App\Http\Middleware\EnsureLogin;
 |
 */
 
+
+
+Route::get('/', function () {
+    return redirect(url('/login'));
+});
+
 Route::get('/login', [Main::class,'login']);
 Route::get('/signup', [Main::class,'signup']);
 Route::get('/checkout', [Main::class,'checkout']);
@@ -28,5 +34,10 @@ Route::middleware([EnsureLogin::class])->group(function () {
     Route::get('/create-map', [Main::class,'index']);
     Route::post('/save-image', [Opearation::class,'save']);
     Route::post('/post-create-order', [Opearation::class,'createOrder']);
+
+});
+Route::get('/logout', function () {
+     session()->flush();
+     return redirect(url('/login'));
 
 });

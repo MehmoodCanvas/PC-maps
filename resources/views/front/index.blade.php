@@ -1,4 +1,8 @@
 @include('front.inc.header')
+
+        <div class="top_db_btn">
+            <a href="{{url('dashboard')}}">Dashboard</a>
+        </div>
         <div id="map">
             <div id="zoom-level-display">Zoom Level: 4</div>
             <div id="map-container">
