@@ -143,13 +143,11 @@ if (cardField.isEligible()) {
     });
     expiryField.render("#card-expiry-field-container");
 
-    // Add click listener to submit button and call the submit function on the CardField component
     document
         .getElementById("card-field-submit-button")
         .addEventListener("click", () => {
             cardField
                 .submit({
-                    // From your billing address fields
                     billingAddress: {
                         addressLine1: document.getElementById(
                             "card-billing-address-line-1"
@@ -187,7 +185,7 @@ async function createOrderCallback() {
             body: JSON.stringify({
                 cart: [
                     {
-                        id: "YOUR_PRODUCT_ID",
+                        id: "1",
                         quantity: 1,
                     },
                 ],
@@ -218,7 +216,6 @@ async function onApproveCallback(data) {
 
         const orderData = await response.json();
 
-        // Handle success or failure
         if (orderData.status === 'COMPLETED') {
             alert("Transaction completed successfully");
         } else {
