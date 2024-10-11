@@ -215,7 +215,7 @@ async function onApproveCallback(data) {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": "{{ csrf_token() }}", 
             },
-            body: JSON.stringify({ "price": {{$maps->map_price}} }), 
+            body: JSON.stringify({ "price": {{$maps->map_price}},"callid":{{$maps->map_id}} }), 
         });
 
         const orderData = await response.json();

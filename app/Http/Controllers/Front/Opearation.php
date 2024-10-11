@@ -111,8 +111,11 @@ class Opearation extends Controller
             
             if ($captureResponse->failed()) {
                return response()->json(['error' => 'PayPal Capture Failed', 'details' => $captureResponse->json()], 400);
+           }else{
+                $map= Map::find($request->callid);
+                $map->map_payment_status='Paid';
+                $map->save();
            }
-       
            return response()->json($captureResponse->json());
        }
     }
