@@ -175,6 +175,8 @@
                                         <th scope="col">Widhth</th>
                                         <th scope="col">Height</th>
                                         <th scope="col">Price</th>
+                                        <th scope="col">Action</th>
+
                             
                                     </tr>
                                 </thead>
@@ -186,6 +188,7 @@
                                         <td>{{$map->map_width}}</td>
                                         <td>{{$map->map_height}}</td>
                                         <td>${{$map->map_price}}</td>
+                                        <td><a href="{{url('checkout?id='.$map->map_id)}}">Buy Map</a></td>
                                        
                                     </tr>
                                     @endforeach

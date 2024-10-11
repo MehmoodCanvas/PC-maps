@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Image\Image;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Opearation extends Controller
 {
@@ -44,7 +46,9 @@ class Opearation extends Controller
 
        public function createOrder(Request $request)
        {
-           $clientID = env('PAYPAL_CLIENT_ID');
+        
+        $map = DB::table('map')->where('map_id', $request['cart'][0]['id'])->first();
+        $clientID = env('PAYPAL_CLIENT_ID');
            $secret = env('PAYPAL_SECRET');
            
            $response = Http::withBasicAuth($clientID, $secret)
@@ -54,41 +58,69 @@ class Opearation extends Controller
                ]);
    
            $accessToken = $response->json()['access_token'];
-   
            $order = Http::withToken($accessToken)
-               ->post('https://api-m.sandbox.paypal.com/v2/checkout/orders', [
-                   'intent' => 'CAPTURE',
-                   'purchase_units' => [
-                       [
-                        
-                           'amount' => [
-                               'currency_code' => 'USD',
-                               'value' => '100.00',  
-                           ],
-                       ],
-                   ],
-               ]);
+           ->post('https://api-m.sandbox.paypal.com/v2/checkout/orders', [
+            'intent' => 'CAPTURE',
+            'purchase_units' => [
+                [
+                    'reference_id' => (string) Str::uuid(), // Generate a unique UUID
+                    'amount' => [
+                        'currency_code' => 'USD',
+                        'value' => $map->map_price, // Use the price from the map data
+                    ],
+                ],
+            ],
+           ]);
    
            return response()->json($order->json());
        }
    
-       public function captureOrder($orderID)
-       {
+      
+       public function captureOrder(Request $request, $orderID)
+       {    
+
+       
            $clientID = env('PAYPAL_CLIENT_ID');
            $secret = env('PAYPAL_SECRET');
-           
-           $response = Http::withBasicAuth($clientID, $secret)
+       
+           // Obtain PayPal access token
+           $tokenResponse = Http::withBasicAuth($clientID, $secret)
                ->asForm()
                ->post('https://api-m.sandbox.paypal.com/v1/oauth2/token', [
                    'grant_type' => 'client_credentials',
                ]);
-   
-           $accessToken = $response->json()['access_token'];
-   
-           $capture = Http::withToken($accessToken)
-               ->post("https://api-m.sandbox.paypal.com/v2/checkout/orders/{$orderID}/capture");
-   
-           return response()->json($capture->json());
+       
+           // Check if the response was successful and get the access token
+           if ($tokenResponse->failed()) {
+               Log::error('Failed to obtain access token:', $tokenResponse->json());
+               return response()->json(['error' => 'Failed to obtain access token'], 500);
+           }
+       
+           $accessToken = $tokenResponse->json()['access_token'];
+       
+           // Prepare headers
+           $headers = [
+            'Authorization' => "Bearer {$accessToken}",
+            'Content-Type' => 'application/json',
+            'PayPal-Request-Id' => Str::uuid()->toString(), // Convert UUID to string
+        ];
+        
+        $captureResponse = Http::withHeaders($headers)
+            ->post("https://api-m.sandbox.paypal.com/v2/checkout/orders/{$orderID}/capture", [
+                'amount' => [
+                    'currency_code' => 'USD', // Change this to your currency code
+                    'value' => '100.00', // Change this to the amount you want to capture
+                ],
+            ]);
+        
+       
+           Log::error('PayPal Capture Response:', $captureResponse->json());
+           dd($captureResponse);
+           if ($captureResponse->failed()) {
+               return response()->json(['error' => 'PayPal Capture Failed', 'details' => $captureResponse->json()], 400);
+           }
+       
+           // Return the successful capture response
+           return response()->json($captureResponse->json());
        }
-
     }

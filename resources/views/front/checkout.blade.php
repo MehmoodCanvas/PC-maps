@@ -185,8 +185,9 @@ async function createOrderCallback() {
             body: JSON.stringify({
                 cart: [
                     {
-                        id: "1",
+                        id: "{{ $_GET['id'] }}",
                         quantity: 1,
+             
                     },
                 ],
             }),
@@ -206,7 +207,7 @@ async function createOrderCallback() {
 
 async function onApproveCallback(data) {
     try {
-        const response = await fetch(`{{ url('/api/orders') }}/${data.orderID}/capture`, {
+        const response = await fetch(`{{ url('/orders') }}/${data.orderID}/capture`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
