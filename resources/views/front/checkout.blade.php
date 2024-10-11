@@ -11,7 +11,7 @@
         <title>PayPal JS SDK Advanced Integration - Checkout Flow</title>
         <script
             src="https://www.paypal.com/sdk/js?client-id=AcfyQW_yPIfAZNZ_9Y-E_LtG-Xjh-nRZjRcCt0PbLlth56dgTON7RkDVrnkN3G2jt6fzK2f-rAHa0qvM&buyer-country=US&currency=USD&components=buttons,card-fields&enable-funding=venmo"
-            data-sdk-integration-source="developer-studio"
+           
         ></script>
     </head>
     <body>
@@ -67,6 +67,8 @@
                     name="card-billing-address-country-code"
                     autocomplete="off"
                     placeholder="Country code"
+                    value="US"
+                    disabled
                 />
             </div>
             <div>
@@ -103,7 +105,7 @@
             label: "paypal",
         },
         message: {
-            amount: 100,
+            amount: {{$maps->map_price}},
         } ,
     })
     .render("#paypal-button-container"); 
@@ -213,6 +215,7 @@ async function onApproveCallback(data) {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": "{{ csrf_token() }}", 
             },
+            body: JSON.stringify({ "price": {{$maps->map_price}} }), 
         });
 
         const orderData = await response.json();

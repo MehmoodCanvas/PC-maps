@@ -26,7 +26,9 @@ class Main extends Controller
    }
 
    public function checkout(){
-      return view('front.checkout');
+      $maps = DB::table('map')->where('map_id',$_GET['id'])->orderBy('map_id',"DESC")->first();
+
+      return view('front.checkout',compact('maps'));
       
    }
    public function dashboard(){
