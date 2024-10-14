@@ -210,6 +210,7 @@ async function onApproveCallback(data) {
     try {
 
             console.table(billingAddress);
+            
         const response = await fetch(`{{ url('/orders') }}/${data.orderID}/capture`, {
             method: "POST",
             headers: {
