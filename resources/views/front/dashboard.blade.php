@@ -259,7 +259,6 @@
     let table = new DataTable('#myTable', {
         // options
     });
-
 </script>
 <script>
 

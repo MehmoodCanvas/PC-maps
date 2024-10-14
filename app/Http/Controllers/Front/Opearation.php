@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Map;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -115,6 +116,19 @@ class Opearation extends Controller
                 $map= Map::find($request->callid);
                 $map->map_payment_status='Paid';
                 $map->save();
+                
+
+                $order= new Order();
+                $order->order_invoice_id=Str::random(5).'PC'.$request->callid;
+                $order->order_address_one=$request->order_address_one;
+                $order->order_address_two=$request->order_address_two;
+                $order->order_zip_code=$request->order_zip_code;
+                $order->order_payment_status='Paid';
+                $order->order_status='Approved';
+                $order->order_member_id=Auth::guard('customer')->user()->customer_id;
+                $order->order_total_amount=$request->price;
+                $order->order_map_id=$request->callid;
+                $order->save();
            }
            return response()->json($captureResponse->json());
        }

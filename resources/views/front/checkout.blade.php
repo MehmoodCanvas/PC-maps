@@ -8,10 +8,9 @@
             type="text/css"
             href="https://www.paypalobjects.com/webstatic/en_US/developer/docs/css/cardfields.css"
         />
-        <title>PayPal JS SDK Advanced Integration - Checkout Flow</title>
+        <title>Checkout</title>
         <script
             src="https://www.paypal.com/sdk/js?client-id=AcfyQW_yPIfAZNZ_9Y-E_LtG-Xjh-nRZjRcCt0PbLlth56dgTON7RkDVrnkN3G2jt6fzK2f-rAHa0qvM&buyer-country=US&currency=USD&components=buttons,card-fields&enable-funding=venmo"
-           
         ></script>
     </head>
     <body>
@@ -209,6 +208,8 @@ async function createOrderCallback() {
 
 async function onApproveCallback(data) {
     try {
+
+            console.table(billingAddress);
         const response = await fetch(`{{ url('/orders') }}/${data.orderID}/capture`, {
             method: "POST",
             headers: {
