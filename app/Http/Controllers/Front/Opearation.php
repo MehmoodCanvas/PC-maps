@@ -9,7 +9,6 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Image\Image;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -38,9 +37,6 @@ class Opearation extends Controller
         $map->map_customer_id=Auth::guard('customer')->user()->customer_id;
         $map->save();
         Storage::disk('public')->put('images/maps/' . $filename, $imageData);
-        // Image::load(storage_path('app/public/images/' . $filename))
-        // ->watermark('preview')
-        // ->save(storage_path('app/public/images/modified-' . $filename));
         return response()->json(['message' => 'Image saved successfully', 'filename' => $total]);
     
        }
