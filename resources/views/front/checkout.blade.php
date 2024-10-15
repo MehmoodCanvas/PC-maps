@@ -208,16 +208,16 @@ async function createOrderCallback() {
 
 async function onApproveCallback(data) {
     try {
-
-            console.table(billingAddress);
-            
+       var order_address_one=document.getElementById("card-billing-address-line-1").value;
+       var order_address_two=document.getElementById("card-billing-address-line-2").value;
+       var order_zip_code= document.getElementById("card-billing-address-postal-code").value;
         const response = await fetch(`{{ url('/orders') }}/${data.orderID}/capture`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": "{{ csrf_token() }}", 
             },
-            body: JSON.stringify({ "price": {{$maps->map_price}},"callid":{{$maps->map_id}} }), 
+            body: JSON.stringify({ "price": {{$maps->map_price}},"callid":{{$maps->map_id}} ,"order_address_one":order_address_one,'order_address_two':order_address_two,"order_zip_code":order_zip_code}), 
         });
 
         const orderData = await response.json();

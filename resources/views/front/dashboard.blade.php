@@ -58,104 +58,23 @@
                             <table class="table" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Profile</th>
-                                        <th scope="col">Designation</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Stars</th>
+                                        <th scope="col">Order Id</th>
+                                        <th scope="col">Map</th>
+                                        <th scope="col">Amount</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($orders as $order)
                                     <tr>
-                                        <th scope="row">Elsa Robert</th>
-                                        <td>House Cleaning</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Will Smith</th>
-                                        <td>Associate Engineer</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">George Andrew</th>
-                                        <td>Plumber</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">John Albert</th>
-                                        <td>Design</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="greenp">Delivered</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Harry Lington</th>
-                                        <td>Administrative</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Will Smith</th>
-                                        <td>Handyman</td>
-                                        <td>mm/dd/yyyy</td>
-                                        <td>
-                                            <ul>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                                <li><i class="fa-solid fa-star"></i></li>
-                                            </ul>
-                                        </td>
-                                        <td><a href="#!" class="yellowp">Pending</a></td>
-                                    </tr>
+                                        <th scope="row">{{$order->order_invoice_id}}</th>
+                                        <td><img src="{{$order->map_data}}" alt="{{$order->order_invoice_id}}" class="img-fluid"></td>
+                                        <td>${{$order->order_total_amount}}</td>
+                                        <td><a href="#!" class="yellowp">{{$order->order_status}}</a></td>
+                                    </tr>     
+                                    @endforeach
+                                   
+
                                 </tbody>
                             </table>
                         </div>
@@ -184,7 +103,7 @@
                                     @foreach ($maps as $map)
                                         
                                     <tr>
-                                        <th scope="row"><img src="{{$map->map_data}}" alt=""></th>
+                                        <th scope="row"><img src="{{$map->map_data}}" class="img-fluid" alt=""></th>
                                         <td>{{$map->map_width}}</td>
                                         <td>{{$map->map_height}}</td>
                                         <td>${{$map->map_price}}</td>

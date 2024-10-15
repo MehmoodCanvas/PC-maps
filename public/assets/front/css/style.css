@@ -243,6 +243,22 @@ a#downloadLink {
 	outline: none;
 	color: #000;
 }
+.form-group textarea {
+	display: block;
+	position: relative;
+	margin: 0px auto;
+	width: 100%;
+	height: 100px;
+	resize: none;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	font-size: 14px;
+	border-radius: 10px;
+	margin: 10px 0px;
+	outline: none;
+	color: #000;
+}
 
 #add-title {
 	display: block;
@@ -420,3 +436,70 @@ a#downloadLink {
 		color: #000;
 		text-decoration: none;
 	}
+
+
+	.material-checkbox {
+		padding: 10px 0px 0px 10px;
+		display: inline-flex;
+		align-items: center;
+		font-size: 16px;
+		color: #000000;
+		cursor: pointer;
+		margin: 0px 0px 10px 0px;
+		user-select: none;
+		}
+	  
+	  .material-checkbox input[type="checkbox"] {
+		position: absolute;
+		opacity: 0;
+		width: 0;
+		height: 0;
+	  }
+	  
+	  .checkmark {
+		position: relative;
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		margin-right: 12px;
+		border: 2px solid #000;
+		border-radius: 4px;
+		transition: all 0.3s;
+		}
+	  
+	  .material-checkbox input[type="checkbox"]:checked ~ .checkmark {
+		background-color: #ED8A65;
+		border-color: #ee8a65;
+		}
+	  
+	  .material-checkbox input[type="checkbox"]:checked ~ .checkmark:after {
+		content: "";
+		position: absolute;
+		top: 2px;
+		left: 6px;
+		width: 4px;
+		height: 10px;
+		border: solid white;
+		border-width: 0 2px 2px 0;
+		transform: rotate(45deg);
+	  }
+	  
+	  .material-checkbox input[type="checkbox"]:focus ~ .checkmark {
+		box-shadow: 0 0 0 2px #dfec5065;
+	  }
+	  
+	  .material-checkbox:hover input[type="checkbox"] ~ .checkmark {
+		border-color: #ED8A65;
+		}
+	  
+	  .material-checkbox input[type="checkbox"]:disabled ~ .checkmark {
+		opacity: 0.5;
+		cursor: not-allowed;
+	  }
+	  
+	  .material-checkbox input[type="checkbox"]:disabled ~ .checkmark:hover {
+		border-color: #4d4d4d;
+	  }
+	  .w-100{
+		width: 100% !important;
+	  }

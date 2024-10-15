@@ -27,7 +27,6 @@ class Opearation extends Controller
         }else{
             echo 4.99;
         }
-        exit;
         $total = $height * $width * '.70';
     
         $image = str_replace('data:image/png;base64,', '', $data);

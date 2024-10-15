@@ -62,12 +62,30 @@
                     <button id="preview-button">Preview</button>
                     <a id="downloadLink" href="#" >Download ↓</a>
                 </div>
-                <div class="form-group">
-                    <input type="checkbox" name="" id="compasss-add">
-                    <input type="checkbox" name="" id="add-on">
-                    <input type="text" placeholder="Commnets on Add on">
+                <div class="form_group_input">
+                    <label class="material-checkbox">
+                        <input type="checkbox" name="" id="compasss-add">
+                        <span class="checkmark"></span>
+                            Add Compass ($4.99)
+                      </label>
                 </div>
-
+                <div class="form_group_input">
+                    <label class="material-checkbox">
+                        <input type="checkbox" name="" id="add-on">
+                        <span class="checkmark"></span>
+                        Add On
+                      </label>
+                </div>
+                <div class="form_group_input">
+                    <label class="material-checkbox">
+                        <input type="checkbox" name="" id="wooden-on">
+                        <span class="checkmark"></span>
+                        Additional Wooden Frame
+                      </label>
+                </div>
+                <div class="form-group">
+                    <textarea name="" id="addon-text" cols="30" rows="10"></textarea>
+                </div>
             </div>
 
         </nav>
