@@ -20,7 +20,14 @@ class Opearation extends Controller
         $data = $request->input('image'); 
         $width = $request->input('width'); 
         $height = $request->input('height'); 
-    
+        $text= $request->input('text');
+
+        if($text <= 2){
+            echo 0;
+        }else{
+            echo 4.99;
+        }
+        exit;
         $total = $height * $width * '.70';
     
         $image = str_replace('data:image/png;base64,', '', $data);

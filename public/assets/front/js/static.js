@@ -73,7 +73,6 @@
                 }
             });
 
-            // Wait until the map has finished loading.
             map.on('load', () => {
 
 
@@ -481,21 +480,23 @@
 
 
             let text_marker;
-
+            var title_item = [];
+         
             document.getElementById('add-title').addEventListener('click', () => {
                 const title = document.getElementById('title-input').value;
+                window.count=  title_item.push(title);
                 const font = document.getElementById('title-font').value;
                 if (title) {
-                    console.log(title);
                     const mapCenter = map.getCenter();
 
                     text_marker = createCustomMarker1('fas fa-heart', title, font).setLngLat([mapCenter.lng, mapCenter.lat]).addTo(map);
                 }
             });
 
-
+            
 
     $('#downloadLink').click(function () {
+
         const overlayContainer = document.getElementById('overlay-container');
         const overlayWidthPixels = overlayContainer.offsetWidth;
         const overlayHeightPixels = overlayContainer.offsetHeight;
@@ -563,6 +564,7 @@
             const dataURL = captureCanvas.toDataURL('image/png', 1.0);
             const input_widthInches = parseFloat(document.getElementById('width-inches').value);
             const input_heightInches = parseFloat(document.getElementById('height-inches').value);
+            const final_count=window.count;
             fetch('/save-image', {
                 method: 'POST',
                 headers: {
@@ -572,7 +574,8 @@
                 body: JSON.stringify({
                     image: dataURL,
                     width:input_widthInches,
-                    height:input_heightInches
+                    height:input_heightInches,
+                    text:final_count
                 })
             })
             .then(response => response.json())

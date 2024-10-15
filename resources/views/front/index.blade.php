@@ -30,7 +30,7 @@
                 </div>
                 <button id="fly">Fly</button>
                 <div id="added-titles"></div>
-                <input type="text" id="title-input" placeholder="Enter Title">
+                <input type="text" id="title-input" placeholder="Enter Title (2 Free Rows)">
 
                 <div class="form-group">
                     <select id="title-font">
@@ -62,8 +62,14 @@
                     <button id="preview-button">Preview</button>
                     <a id="downloadLink" href="#" >Download ↓</a>
                 </div>
+                <div class="form-group">
+                    <input type="checkbox" name="" id="compasss-add">
+                    <input type="checkbox" name="" id="add-on">
+                    <input type="text" placeholder="Commnets on Add on">
+                </div>
 
             </div>
+
         </nav>
 
         @include('front.inc.footer')

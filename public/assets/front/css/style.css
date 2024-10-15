@@ -228,6 +228,22 @@ a#downloadLink {
 	color: #000;
 }
 
+.form-group input {
+	display: block;
+	position: relative;
+	margin: 0px auto;
+	width: 48%;
+	height: 40px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	font-size: 14px;
+	border-radius: 60px;
+	margin: 10px 0px;
+	outline: none;
+	color: #000;
+}
+
 #add-title {
 	display: block;
 	position: relative;
