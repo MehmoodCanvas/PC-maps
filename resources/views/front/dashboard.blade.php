@@ -123,6 +123,7 @@
                             <h6>Settings</h6>
                         </div>
                         <div class="d_content_main_form_wrap">
+                            
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                     <div class="d_content_main_form_inputs">

@@ -64,14 +64,14 @@
                 </div>
                 <div class="form_group_input">
                     <label class="material-checkbox">
-                        <input type="checkbox" name="" id="compasss-add">
+                        <input type="checkbox" name="compasss" value="compasss" id="compasss-add">
                         <span class="checkmark"></span>
                             Add Compass ($4.99)
                       </label>
                 </div>
                 <div class="form_group_input">
                     <label class="material-checkbox">
-                        <input type="checkbox" name="" id="add-on">
+                        <input type="checkbox" name="add_on" id="add-on">
                         <span class="checkmark"></span>
                         Add On
                       </label>

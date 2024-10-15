@@ -565,6 +565,18 @@
             const input_widthInches = parseFloat(document.getElementById('width-inches').value);
             const input_heightInches = parseFloat(document.getElementById('height-inches').value);
             const final_count=window.count;
+            if(document.getElementById('compasss-add').checked){
+               const compass= true;
+            }else{
+                return false;
+
+            }
+            if(document.getElementById('add-on').checked){
+                const addons= true;
+             }else{
+                 return false;
+ 
+             }
             fetch('/save-image', {
                 method: 'POST',
                 headers: {
@@ -575,7 +587,9 @@
                     image: dataURL,
                     width:input_widthInches,
                     height:input_heightInches,
-                    text:final_count
+                    text:final_count,
+                    compass:compass,
+                    addons:addons
                 })
             })
             .then(response => response.json())

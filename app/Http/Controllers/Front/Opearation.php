@@ -21,12 +21,31 @@ class Opearation extends Controller
         $width = $request->input('width'); 
         $height = $request->input('height'); 
         $text= $request->input('text');
+        $compass= $request->input('compass');
+        $addons= $request->input('addons');
+
+
+        if($compass ===true){
+             echo 4.99;
+        }else{
+            echo 0;
+
+        }
 
         if($text <= 2){
             echo 0;
         }else{
             echo 4.99;
         }
+        if($addons ===true){
+            echo 9.99;
+       }else{
+           echo 0;
+
+       }
+
+
+        
         $total = $height * $width * '.70';
     
         $image = str_replace('data:image/png;base64,', '', $data);
