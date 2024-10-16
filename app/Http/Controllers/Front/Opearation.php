@@ -43,8 +43,6 @@ class Opearation extends Controller
            echo 0;
 
        }
-
-
         
         $total = $height * $width * '.70';
     
@@ -68,7 +66,6 @@ class Opearation extends Controller
 
        public function createOrder(Request $request)
        {
-        
         $map = DB::table('map')->where('map_id', $request['cart'][0]['id'])->first();
         $clientID = env('PAYPAL_CLIENT_ID');
            $secret = env('PAYPAL_SECRET');
