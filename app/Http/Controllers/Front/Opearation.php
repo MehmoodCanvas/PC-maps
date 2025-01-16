@@ -16,6 +16,18 @@ use Illuminate\Support\Facades\Log;
 class Opearation extends Controller
 {
     public function save(Request $request){
+
+        $validatedData = $request->validate([
+            'data' => 'required|string',
+            'width' => 'required|numeric',
+            'height' => 'required|numeric',
+            'text' => 'nullable|string',
+            'compass' => 'nullable|string',
+            'addons' => 'nullable|array',
+        ]);
+
+
+
         $map = new Map();
         $data = $request->input('image'); 
         $width = $request->input('width'); 
@@ -43,8 +55,14 @@ class Opearation extends Controller
            $addons= 0;
 
        }
+
+       $frame_init= $height * $width * '2';
+       $frame_add= 4.5 + $frame_init * 4;
+       $frame_plus= $frame_add * 9.6;
+       $frame_total= $frame_plus + 100;
+
         
-        $total = $height * $width * '.70' + $text + $compass + $addons;
+        $total = $frame_total * '.70' + $text + $compass + $addons;
     
         $image = str_replace('data:image/png;base64,', '', $data);
         $image = str_replace(' ', '+', $image);
