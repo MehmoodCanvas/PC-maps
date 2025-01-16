@@ -483,7 +483,6 @@ let text_marker;
 var title_item = [];
 
 document.getElementById('add-title').addEventListener('click', () => {
-    alert()
     const title = document.getElementById('title-input').value;
     window.count=  title_item.push(title);
     const font = document.getElementById('title-font').value;
