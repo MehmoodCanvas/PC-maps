@@ -10,7 +10,7 @@ const map = new mapboxgl.Map({
 
 map.on('wheel', (e) => {
     const delta = e.originalEvent.deltaY;
-    const zoomSpeed = 0.01; // You can adjust the zoom speed
+    const zoomSpeed = 0.01;
     const zoom = map.getZoom() + (delta > 0 ? -zoomSpeed : zoomSpeed);
     const coords = map.unproject([e.originalEvent.x, e.originalEvent.y]);
     const mapCenter = map.getCenter();

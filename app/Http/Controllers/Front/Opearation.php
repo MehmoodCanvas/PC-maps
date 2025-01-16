@@ -144,8 +144,6 @@ class Opearation extends Controller
                     'value' => $request->price, 
                 ],
             ]);
-            
-            
             if ($captureResponse->failed()) {
                return response()->json(['error' => 'PayPal Capture Failed', 'details' => $captureResponse->json()], 400);
            }else{
