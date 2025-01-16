@@ -26,25 +26,25 @@ class Opearation extends Controller
 
 
         if($compass ===true){
-             echo 4.99;
+             $compass= 4.99;
         }else{
-            echo 0;
+            $compass= 0;
 
         }
 
         if($text <= 2){
-            echo 0;
+            $text= 0;
         }else{
-            echo 4.99;
+            $text= 4.99;
         }
         if($addons ===true){
-            echo 9.99;
+            $addons= 9.99;
        }else{
-           echo 0;
+           $addons= 0;
 
        }
         
-        $total = $height * $width * '.70';
+        $total = $height * $width * '.70' + $text + $compass + $addons;
     
         $image = str_replace('data:image/png;base64,', '', $data);
         $image = str_replace(' ', '+', $image);

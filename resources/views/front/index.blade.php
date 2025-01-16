@@ -60,7 +60,7 @@
 
                 <div class="form-group">
                     <button id="preview-button">Preview</button>
-                    <a id="downloadLink" href="#" >Download ↓</a>
+                    <button id="downloadLink" href="#" >Download ↓</button>
                 </div>
                 <div class="form_group_input">
                     <label class="material-checkbox">
