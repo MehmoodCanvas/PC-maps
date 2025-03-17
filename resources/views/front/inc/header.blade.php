@@ -31,7 +31,17 @@
     }
 
     .active-marker {
-        border: 2px solid black; 
+        display: inline-block;
+        padding: 10px;
+        font-size: 24px;
+        font-weight: bold;
+        border: 2px solid blue; /* Blue border */
+        min-width: 100px;
+        min-height: 40px;
+        text-align: center;
+        position: absolute;
+        resize: both;
+        overflow: auto;
     }
 
     </style>
