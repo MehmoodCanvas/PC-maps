@@ -23,11 +23,20 @@ map.on('wheel', (e) => {
 
 const zoomLevelDisplay = document.getElementById('zoom-level-display');
 
-map.on('zoom', () => {
-    const zoom = map.getZoom().toFixed(2);
-    zoomLevelDisplay.textContent = `Zoom Level: ${zoom}`;
-});
+map.on('wheel', (e) => {
+    e.preventDefault(); 
 
+    const delta = e.originalEvent.deltaY > 0 ? -0.5 : 0.5; 
+    const zoom = map.getZoom() + delta;
+
+    const coords = map.unproject([e.originalEvent.offsetX, e.originalEvent.offsetY]); 
+
+    map.easeTo({
+        center: coords, 
+        zoom: zoom,
+        duration: 500 
+    });
+});
 
 
 
@@ -338,7 +347,9 @@ function createCustomMarker(iconClass) {
     let sizeState = 'big';
     const customMarkerElement = document.createElement('div');
     customMarkerElement.className = 'custom-marker'; 
-
+    customMarkerElement.addEventListener('dblclick', (e) => {
+        e.stopPropagation(); 
+    });
     const iconElement = document.createElement('i');
     iconElement.className = iconClass; 
 

@@ -19,7 +19,22 @@
     <link href='https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.css' rel='stylesheet' />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <style>
+    .custom-marker {
+        width: 120px;
+        padding: 2px;
+        border: none; 
+        display: inline-block;
+        text-align: center;
+        cursor: grab;
+        outline: none; 
+    }
 
+    .active-marker {
+        border: 2px solid black; 
+    }
+
+    </style>
 </head>
 
 
