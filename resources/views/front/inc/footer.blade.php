@@ -4,64 +4,50 @@
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const markers = document.querySelectorAll('.custom-marker');
+document.addEventListener("DOMContentLoaded", function () {
+    // Ensure all `.custom-marker` elements can be focused
+    document.querySelectorAll(".custom-marker").forEach(marker => {
+        marker.setAttribute("tabindex", "0");
 
-    markers.forEach(marker => {
-        // Allow focusing for interaction detection
-        marker.setAttribute('tabindex', '0');
-
-        // Ensure clicking inside the marker still triggers focus
-        marker.addEventListener('mousedown', (event) => {
-            event.preventDefault(); // Prevents focus from going to child elements
-            marker.focus(); // Manually set focus on the marker
+        // Focus Handling
+        marker.addEventListener("focus", function () {
+            this.classList.add("active-marker");
         });
 
-        marker.addEventListener('focus', () => {
-            marker.classList.add('active-marker');
+        marker.addEventListener("blur", function () {
+            this.classList.remove("active-marker");
         });
 
-        marker.addEventListener('blur', () => {
-            marker.classList.remove('active-marker');
+        // Prevent focus loss when clicking inside the marker
+        marker.addEventListener("mousedown", function (e) {
+            e.preventDefault();
         });
     });
 });
 
-interact('.custom-marker')
-    .resizable({
-        edges: { left: true, right: true, bottom: true, top: true },
+// Resizability using Interact.js
+interact(".custom-marker").resizable({
+    edges: { left: true, right: true, top: true, bottom: true },
+    modifiers: [
+        interact.modifiers.restrictSize({
+            min: { width: 50, height: 50 },
+            max: { width: 300, height: 300 }
+        })
+    ],
+    inertia: true
+}).on("resizemove", function (event) {
+    let target = event.target;
+    let pTag = target.querySelector("p");
 
-        listeners: {
-            move(event) {
-                var target = event.target;
+    // Apply new width and height
+    target.style.width = `${event.rect.width}px`;
+    target.style.height = `${event.rect.height}px`;
 
-                // Get the specific p inside this custom-marker
-                const textElement = target.querySelector('p');
+    // Adjust font size dynamically if <p> tag exists
+    if (pTag) {
+        let newSize = Math.max(12, event.rect.width / 10);
+        pTag.style.fontSize = `${newSize}px`;
+    }
+});
 
-                if (textElement) {
-                    // Update size while maintaining text flow
-                    target.style.width = event.rect.width + 'px';
-                    target.style.height = 'auto'; // Ensure height adjusts with the text
-
-                    // Dynamically resize font based on width
-                    let newFontSize = event.rect.width / 10;
-                    textElement.style.fontSize = `${Math.max(12, newFontSize)}px`;
-                }
-
-                target.classList.add('active-marker');
-            },
-            end(event) {
-                var target = event.target;
-                target.classList.remove('active-marker');
-            }
-        },
-
-        modifiers: [
-            interact.modifiers.restrictEdges({ outer: 'parent' }),
-            interact.modifiers.restrictSize({ min: { width: 100, height: 50 } })
-        ],
-
-        inertia: true
-    })
-    .draggable(false);
 </script>
