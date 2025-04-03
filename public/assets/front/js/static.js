@@ -502,7 +502,7 @@ document.getElementById('add-title').addEventListener('click', () => {
     if (title) {
         const mapCenter = map.getCenter();
 
-        text_marker = createCustomMarker1('fas fa-heart', title, font).setLngLat([mapCenter.lng, mapCenter.lat]).addTo(map);
+        text_marker = createCustomMarker1('fa fa-heart', title, font).setLngLat([mapCenter.lng, mapCenter.lat]).addTo(map);
     }
 });
 
