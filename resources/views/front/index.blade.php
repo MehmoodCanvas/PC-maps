@@ -4,7 +4,7 @@
             <a href="{{url('dashboard')}}">Dashboard</a>
         </div>
         <div id="map">
-            <div id="zoom-level-display">Zoom Level: 4</div>
+            <div id="zoom-level-display">Zoom Level: <span id='zoom_count'>4</span></div>
             <div id="map-container">
                 <div id="overlay-container">
                     <div id="preview-overlay">
@@ -28,6 +28,11 @@
                     <input id="latitude" type="text" placeholder="Latitude">
                     <input id="longitude" type="text" placeholder="Longitude">
                 </div>
+
+                <div class="form-group">
+                  <button id="zoom-in"><i class="fa-solid fa-plus"></i></button>
+                  <button id="zoom-out"> <i class="fa-solid fa-minus"></i></button>
+                </div>
                 <button id="fly">Fly</button>
                 <div id="added-titles"></div>
                 <input type="text" id="title-input" placeholder="Enter Title (2 Free Rows)">
@@ -50,6 +55,7 @@
                     <a href="#!" id="marker-toggle" class="toggle_btn_1"><i class="fa-solid fa-heart"></i></a>
                     <a href="#!" id="house-toggle" class="toggle_btn_1"><i class="fa-solid fa-house"></i></a>
                     <a href="#!" id="star-toggle" class="toggle_btn_1"><i class="fa-solid fa-star"></i></a>
+
                 </div>
 
 

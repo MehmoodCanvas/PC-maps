@@ -573,5 +573,20 @@ body::-webkit-scrollbar-thumb {
 /* ANIMATIONS */
 
 /*ADDITIONAL CSS*/
-
+#zoom-controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 1000;
+}
+#zoom-controls button {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
 /*ADDITIONAL CSS*/

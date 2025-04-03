@@ -18,10 +18,11 @@ map.on('wheel', (e) => {
         center: mapCenter,
         zoom: zoom,
     });
+    const zoomLevelDisplay = document.getElementById('zoom_count');
+    zoomLevelDisplay.innerHTML= zoom.toFixed(2)
 });
 
 
-const zoomLevelDisplay = document.getElementById('zoom-level-display');
 
 map.on('wheel', (e) => {
     e.preventDefault(); 
@@ -388,10 +389,11 @@ const marker = createCustomMarker('fa fa-heart').setLngLat([mapCenter.lng, mapCe
 
 const houseMarker = createCustomMarker('fa fa-home').setLngLat([mapCenter.lng, mapCenter.lat]);
 const starMarker = createCustomMarker('fa fa-star').setLngLat([mapCenter.lng, mapCenter.lat]);
-
+const CompassMaker = createCustomMarker("fa fa-compass").setLngLat([mapCenter.lng, mapCenter.lat]);
 document.getElementById('marker-toggle').addEventListener('click', () => toggleMarkerVisibility(marker));
 document.getElementById('house-toggle').addEventListener('click', () => toggleMarkerVisibility(houseMarker));
 document.getElementById('star-toggle').addEventListener('click', () => toggleMarkerVisibility(starMarker));
+document.getElementById('compasss-add').addEventListener('click', () => toggleMarkerVisibility(CompassMaker));
 
 let markerAdded = false; 
 
@@ -602,3 +604,10 @@ $(".toggle_menu").on("click", function (event) {
 });
 
 
+document.getElementById('zoom-in').addEventListener('click', () => {
+    map.zoomIn();
+});
+
+document.getElementById('zoom-out').addEventListener('click', () => {
+    map.zoomOut();
+});
