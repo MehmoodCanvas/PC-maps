@@ -1,8 +1,8 @@
 @include('front.inc.header')
 
-        <div class="top_db_btn">
+    <div class="top_db_btn">
             <a href="{{url('dashboard')}}">Dashboard</a>
-        </div>
+    </div>
         <div id="map">
             <div id="zoom-level-display">Zoom Level: <span id='zoom_count'>4</span></div>
             <div id="map-container">
@@ -19,8 +19,6 @@
         <nav id="menu">
             <button class="toggle_menu"><i class="fa-solid fa-bars"></i></button>
             <h1 class="heading">CHOOSE LOCATION</h1>
-
-
             <input id="location-input" type="text" placeholder="Search for a location or enter a postal code">
             <div class="scroll_container">
                 <div id="location-suggestions" class="suggestions"></div>
@@ -28,15 +26,13 @@
                     <input id="latitude" type="text" placeholder="Latitude">
                     <input id="longitude" type="text" placeholder="Longitude">
                 </div>
-
-                <div class="form-group">
+                <div class="form-group form-group-center">
                   <button id="zoom-in"><i class="fa-solid fa-plus"></i></button>
                   <button id="zoom-out"> <i class="fa-solid fa-minus"></i></button>
                 </div>
                 <button id="fly">Fly</button>
                 <div id="added-titles"></div>
                 <input type="text" id="title-input" placeholder="Enter Title (2 Free Rows)">
-
                 <div class="form-group">
                     <select id="title-font">
                         <option value="1">1 inch</option>
@@ -47,18 +43,13 @@
 
                     </select>
                 </div>
-
-
                 <button id="add-title">Add Title</button>
-
                 <div class="form-group">
                     <a href="#!" id="marker-toggle" class="toggle_btn_1"><i class="fa-solid fa-heart"></i></a>
                     <a href="#!" id="house-toggle" class="toggle_btn_1"><i class="fa-solid fa-house"></i></a>
                     <a href="#!" id="star-toggle" class="toggle_btn_1"><i class="fa-solid fa-star"></i></a>
 
                 </div>
-
-
                 <div class="form-group">
                     <input id="width-inches" value="12" type="number" placeholder="Width (inches)">
                     <input id="height-inches" value="6" type="number" placeholder="Height (inches)">

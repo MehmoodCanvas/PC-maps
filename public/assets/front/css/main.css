@@ -589,4 +589,31 @@ body::-webkit-scrollbar-thumb {
     font-weight: bold;
     cursor: pointer;
 }
+
+.custom-marker {
+    width: 120px;
+    padding: 2px;
+    border: none; 
+    display: inline-block;
+    text-align: center;
+    cursor: grab;
+    outline: none; 
+}
+
+.active-marker {
+    display: inline-block;
+    padding: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid blue; /* Blue border */
+    min-width: 100px;
+    min-height: 40px;
+    text-align: center;
+    position: absolute;
+    resize: both;
+    overflow: auto;
+}
+.form-group-center {
+    justify-content: center !important;
+}
 /*ADDITIONAL CSS*/
