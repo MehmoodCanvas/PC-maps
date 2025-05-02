@@ -386,10 +386,18 @@ function createCustomMarker(iconClass) {
 
 const mapCenter = map.getCenter();
 const marker = createCustomMarker('fa fa-heart').setLngLat([mapCenter.lng, mapCenter.lat]);
-
+const compassimage= '/assets/front/images/compass.png';
 const houseMarker = createCustomMarker('fa fa-home').setLngLat([mapCenter.lng, mapCenter.lat]);
 const starMarker = createCustomMarker('fa fa-star').setLngLat([mapCenter.lng, mapCenter.lat]);
-const CompassMaker = createCustomMarker("fa fa-compass").setLngLat([mapCenter.lng, mapCenter.lat]);
+const CompassMaker = new mapboxgl.Marker({ 
+    element: document.createElement('img'), 
+    draggable: true 
+}).setLngLat([mapCenter.lng, mapCenter.lat]);
+CompassMaker.getElement().src = compassimage;
+CompassMaker.getElement().style.width = '30px';
+CompassMaker.getElement().style.height = '30px';
+CompassMaker.getElement().classList.add('custom-marker');
+
 document.getElementById('marker-toggle').addEventListener('click', () => toggleMarkerVisibility(marker));
 document.getElementById('house-toggle').addEventListener('click', () => toggleMarkerVisibility(houseMarker));
 document.getElementById('star-toggle').addEventListener('click', () => toggleMarkerVisibility(starMarker));

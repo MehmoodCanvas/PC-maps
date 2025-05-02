@@ -28,7 +28,7 @@ body {
 	font-weight: 700;
 	text-align: center;
 	color: #fff;
-	background: #ee8a65;
+	background: #4d94c5;
 	letter-spacing: 2px;
 	cursor: pointer;
 }
@@ -101,7 +101,7 @@ input#height-inches {
 /*    width: 100%;*/
 /*}*/
 #menu {
-    background: #eeeeee;
+    background: #000000;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -113,8 +113,8 @@ input#height-inches {
     padding: 20px 10px;
     z-index: 999999;
     transition: all 0.25s;
-	overflow-y: scroll;
-	padding: 20px 20px;
+    overflow-y: scroll;
+    padding: 20px;
 }
 #menu.active {
     right: -320px;
@@ -132,7 +132,7 @@ input#height-inches {
 #menu a,
 #preview-button {
 	font-size: 13px;
-	color: #404040;
+	color: #ffffff;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -148,8 +148,8 @@ input#height-inches {
 	font-weight: 700;
 	margin: 8px 0px;
 	cursor: pointer;
-	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px inset;
 	text-transform: capitalize;
+	background: #4d94c5;
 }
 
 .toggle_menu {
@@ -159,12 +159,13 @@ input#height-inches {
     justify-content: center;
     align-items: center;
     font-size: 20px;
-    color: #000;
-    border: 2px solid #000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    background-color: #4d94c5;
     border-radius: 5px;
     position: fixed;
     top: 5px;
-    right: 10px;
+    right: 40px;
     cursor: pointer;
     z-index: 9999;
 }
@@ -270,20 +271,20 @@ a#downloadLink {
 
 }
 button#zoom-in {
-    background: #ee8a65;
-    border-radius: 5px;
+    background: #4d94c5;
+    border-radius: 20px;
     border: none;
-    font-size: 14px;
+    font-size: 12px;
     color: #FFF;
-    padding: 5px 5px;
+    padding: 10px 12px;
 }
 button#zoom-out {
-	background: #ee8a65;
-    border-radius: 5px;
-    border: none;
-    font-size: 14px;
-    color: #FFF;
-    padding: 5px 5px;
+	background: #4d94c5;
+	border-radius: 20px;
+	border: none;
+	font-size: 12px;
+	color: #FFF;
+	padding: 10px 12px;
 }
 #add-title {
 	display: block;
@@ -298,7 +299,7 @@ button#zoom-out {
 	font-weight: 700;
 	text-align: center;
 	color: #fff;
-	background: #ee8a65;
+	background: #4d94c5;
 	letter-spacing: 2px;
 	margin-bottom: 10px;
 	cursor: pointer;
@@ -308,13 +309,14 @@ button#zoom-out {
 #location-input {
 	max-width: 270px;
 	width: 100%;
-	padding: 10px;
+	height: 30px;
+	padding: 10px 5px;
 	border: 1px solid #ccc;
 	border-radius: 3px;
-	font-size: 15px;
+	font-size: 14px;
 	margin-bottom: 10px;
 	border-radius: 60px;
-	color: #000;
+	color: #000000;
 	outline: none;
 }
 
@@ -435,7 +437,7 @@ button#zoom-out {
 .heading {
 	font-size: 18px;
 	text-align: center;
-	color: #000;
+	color: #ffffff;
 	padding-bottom: 10px;
 }
 
@@ -468,7 +470,7 @@ button#zoom-out {
 		display: inline-flex;
 		align-items: center;
 		font-size: 16px;
-		color: #000000;
+		color: #ffffff;
 		cursor: pointer;
 		margin: 0px 0px 10px 0px;
 		user-select: none;
@@ -487,14 +489,14 @@ button#zoom-out {
 		width: 20px;
 		height: 20px;
 		margin-right: 12px;
-		border: 2px solid #000;
+		border: 2px solid #ffffff;
 		border-radius: 4px;
 		transition: all 0.3s;
 		}
 	  
 	  .material-checkbox input[type="checkbox"]:checked ~ .checkmark {
-		background-color: #ED8A65;
-		border-color: #ee8a65;
+		background-color: #4d94c5;
+		border-color: #ffffff;
 		}
 	  
 	  .material-checkbox input[type="checkbox"]:checked ~ .checkmark:after {
@@ -514,7 +516,7 @@ button#zoom-out {
 	  }
 	  
 	  .material-checkbox:hover input[type="checkbox"] ~ .checkmark {
-		border-color: #ED8A65;
+		border-color: #4d94c5;
 		}
 	  
 	  .material-checkbox input[type="checkbox"]:disabled ~ .checkmark {
@@ -528,3 +530,4 @@ button#zoom-out {
 	  .w-100{
 		width: 100% !important;
 	  }
+	  .hi_box {padding: 10px;border: 1px solid #fff;border-radius: 20px; margin: 0px 0px 10px 0px;}

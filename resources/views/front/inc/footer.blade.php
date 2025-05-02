@@ -5,11 +5,9 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Ensure all `.custom-marker` elements can be focused
     document.querySelectorAll(".custom-marker").forEach(marker => {
         marker.setAttribute("tabindex", "0");
 
-        // Focus Handling
         marker.addEventListener("focus", function () {
             this.classList.add("active-marker");
         });
@@ -18,14 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
             this.classList.remove("active-marker");
         });
 
-        // Prevent focus loss when clicking inside the marker
         marker.addEventListener("mousedown", function (e) {
             e.preventDefault();
         });
     });
 });
 
-// Resizability using Interact.js
 interact(".custom-marker").resizable({
     edges: { left: true, right: true, top: true, bottom: true },
     modifiers: [
