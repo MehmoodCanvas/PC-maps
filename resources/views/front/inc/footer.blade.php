@@ -22,28 +22,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-interact(".custom-marker").resizable({
-    edges: { left: true, right: true, top: true, bottom: true },
-    modifiers: [
-        interact.modifiers.restrictSize({
-            min: { width: 50, height: 50 },
-            max: { width: 300, height: 300 }
-        })
-    ],
-    inertia: true
-}).on("resizemove", function (event) {
-    let target = event.target;
-    let pTag = target.querySelector("p");
-
-    // Apply new width and height
-    target.style.width = `${event.rect.width}px`;
-    target.style.height = `${event.rect.height}px`;
-
-    // Adjust font size dynamically if <p> tag exists
-    if (pTag) {
-        let newSize = Math.max(12, event.rect.width / 10);
-        pTag.style.fontSize = `${newSize}px`;
-    }
-});
-
 </script>

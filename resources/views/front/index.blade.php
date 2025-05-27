@@ -33,8 +33,6 @@
                 </div>
                 <div id="added-titles"></div>
                 <div class="hi_box">
-
-                
                 <input type="text" id="title-input" placeholder="Enter Title (2 Free Rows)">
                 <div class="form-group">
                     <select id="title-font">
@@ -89,6 +87,26 @@
                         <option value="Poppins">Poppins</option>
                         <option value="NotoSans">Noto Sans</option>
                     </select>
+                    <select id="font-size">
+                        <option value="8">8 px</option>
+                        <option value="10">10 px</option>
+                        <option value="12">12 px</option>
+                        <option value="14">14 px</option>
+                        <option value="16" selected>16 px</option>
+                        <option value="18">18 px</option>
+                        <option value="20">20 px</option>
+                        <option value="24">24 px</option>
+                        <option value="28">28 px</option>
+                        <option value="32">32 px</option>
+                        <option value="36">36 px</option>
+                        <option value="40">40 px</option>
+                        <option value="48">48 px</option>
+                        <option value="56">56 px</option>
+                        <option value="64">64 px</option>
+                        <option value="72">72 px</option>
+                        <option value="96">96 px</option>
+                        <option value="120">120 px</option>
+                    </select>
                 </div>
                 <button id="add-title">Add Title</button>
             </div>
@@ -100,7 +118,11 @@
                     <a href="#!" id="marker-toggle" class="toggle_btn_1"><i class="fa-solid fa-heart"></i></a>
                     <a href="#!" id="house-toggle" class="toggle_btn_1"><i class="fa-solid fa-house"></i></a>
                     <a href="#!" id="star-toggle" class="toggle_btn_1"><i class="fa-solid fa-star"></i></a>
-
+                </div>
+                <div class="form-group">
+                    <button id="north-direction" type="button" class="toggle_btn_1"> 
+                        <i class="fa-solid fa-compass"></i> North
+                    </button>
                 </div>
                 <div class="form-group">
                     <input id="width-inches" value="12" type="number" placeholder="Width (inches)">
@@ -136,9 +158,7 @@
                     <textarea name="" id="addon-text" cols="30" rows="10"></textarea>
                 </div>
             </div>
-
         </nav>
-
         @include('front.inc.footer')
     </body>
 

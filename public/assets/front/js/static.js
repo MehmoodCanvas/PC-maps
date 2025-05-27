@@ -7,6 +7,9 @@ const map = new mapboxgl.Map({
     zoom: 4,
     preserveDrawingBuffer: true
 });
+document.getElementById('north-direction').addEventListener('click', () => {
+    map.resetNorth();
+});
 
 map.on('wheel', (e) => {
     const delta = e.originalEvent.deltaY;
@@ -22,8 +25,6 @@ map.on('wheel', (e) => {
     zoomLevelDisplay.innerHTML= zoom.toFixed(2)
 });
 
-
-
 map.on('wheel', (e) => {
     e.preventDefault(); 
 
@@ -35,7 +36,7 @@ map.on('wheel', (e) => {
     map.easeTo({
         center: coords, 
         zoom: zoom,
-        duration: 500 
+        duration: x`` 
     });
 });
 
@@ -422,76 +423,123 @@ function createCustomMarker1(iconClass, title, font) {
     const customMarkerElement = document.createElement('div');
     customMarkerElement.className = 'custom-marker'; 
 
-
+    
     customMarkerElement.style.color = 'white';
 
     var selectedFont = document.getElementById('font-select').value;
-
+    var fontSize = document.getElementById('font-size').value;
 
 
     let font1 = font
-    if (title) {
-        const titleElement = document.createElement('p');
-        titleElement.textContent = title;
-        titleElement.style.fontFamily = selectedFont;
-        titleElement.style.fontSize = ((font1 * 96) / gcd) + 'px';
-   
-        customMarkerElement.appendChild(titleElement);
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.style.display = 'none'; // Initially hidden
-        deleteButton.addEventListener('click', () => {
-            text_marker.remove();
-            const addedTitles = document.getElementById('added-titles');
-            addedTitles.removeChild(customMarkerElement);
-        });
+   if (title) {
+    const titleElement = document.createElement('p');
+    titleElement.textContent = title;
+    titleElement.style.fontFamily = selectedFont;
+    titleElement.style.fontSize = ((font1 * fontSize) / gcd) + 'px';
+    titleElement.classList.add('dragp');
+   titleElement.style.position = 'relative';
+    titleElement.style.display = 'inline-block';
+    titleElement.style.minWidth = '50px';
+    titleElement.style.minHeight = '20px';
+    titleElement.style.padding = '5px';
+    titleElement.style.border = '1px dashed #aaa';
+    titleElement.style.overflow = 'hidden';
+    customMarkerElement.appendChild(titleElement);
 
+    const initialFontSize = parseFloat(window.getComputedStyle(titleElement).fontSize); 
+    const initialWidth = titleElement.offsetWidth;
+    const initialHeight = titleElement.offsetHeight;
 
+    const resizeHandle = document.createElement('div');
+    resizeHandle.style.width = '10px';
+    resizeHandle.style.height = '10px';
+    resizeHandle.style.background = '#333';
+    resizeHandle.style.position = 'absolute';
+    resizeHandle.style.right = '0';
+    resizeHandle.style.bottom = '0';
+    resizeHandle.style.cursor = 'se-resize';
+    resizeHandle.style.zIndex = '10';
+    titleElement.appendChild(resizeHandle);
 
+    let isResizing = false;
 
-        let font = 12; 
+    resizeHandle.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizing = true;
+        titleElement.style.border = '1px dashed #aaa'; 
+    });
 
-        const toggleButton = document.createElement('button');
-        toggleButton.textContent = 'Toggle Font Size';
-        toggleButton.style.display = 'none';
-        toggleButton.addEventListener('click', () => {
-            font = (font === 48 / gcd) ? 96 / gcd : 48 / gcd;
+    document.addEventListener('mousemove', function (e) {
+        if (!isResizing) return;
 
-            titleElement.style.fontSize = font + 'px';
-        });
+        const rect = titleElement.getBoundingClientRect();
+        const newWidth = e.clientX - rect.left;
+        const newHeight = e.clientY - rect.top;
 
+        const boundedWidth = Math.max(50, Math.min(500, newWidth));
+        const boundedHeight = Math.max(20, Math.min(300, newHeight));
 
+        titleElement.style.width = boundedWidth + 'px';
+        titleElement.style.height = boundedHeight + 'px';
 
-        const fontSizeSlider = document.createElement('input');
-        fontSizeSlider.type = 'range';
-        fontSizeSlider.min = '10'; 
-        fontSizeSlider.max = '50'; 
-        fontSizeSlider.value = font; 
-        fontSizeSlider.style.display = 'none'; 
+        const widthScale = boundedWidth / initialWidth;
+        const heightScale = boundedHeight / initialHeight;
+        const avgScale = (widthScale + heightScale) / 2;
 
-        fontSizeSlider.addEventListener('input', () => {
-            const newFontSize = fontSizeSlider.value;
-            titleElement.style.fontSize = newFontSize + 'px';
+        const scaledFontSize = initialFontSize * avgScale;
+        titleElement.style.fontSize = scaledFontSize + 'px';
+    });
 
-        });
+    document.addEventListener('mouseup', function () {
+        isResizing = false;
+        titleElement.style.border = 'none'; 
+    });
 
-        titleElement.addEventListener('click', () => {
-            if (deleteButton.style.display === 'none') {
-                deleteButton.style.display = 'block';
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.style.display = 'none';
+    deleteButton.addEventListener('click', () => {
+        text_marker.remove();
+        const addedTitles = document.getElementById('added-titles');
+        addedTitles.removeChild(customMarkerElement);
+    });
 
-                toggleButton.style.display = 'block';
-            } else {
-                deleteButton.style.display = 'none';
-      
-                toggleButton.style.display = 'none';
-            }
-        });
+    const divider = document.createElement('div');
+    divider.className = 'divider';
+    customMarkerElement.appendChild(divider);
 
+    let font = 12;
 
-        customMarkerElement.appendChild(toggleButton);
-        customMarkerElement.appendChild(deleteButton);
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Toggle Font Size';
+    toggleButton.style.display = 'none';
+    toggleButton.addEventListener('click', () => {
+        font = (font === 48 / gcd) ? 96 / gcd : 48 / gcd;
+        titleElement.style.fontSize = font + 'px';
+    });
 
-    }
+    const fontSizeSlider = document.createElement('input');
+    fontSizeSlider.type = 'range';
+    fontSizeSlider.min = '10';
+    fontSizeSlider.max = '50';
+    fontSizeSlider.value = font;
+    fontSizeSlider.style.display = 'none';
+
+    fontSizeSlider.addEventListener('input', () => {
+        const newFontSize = fontSizeSlider.value;
+        titleElement.style.fontSize = newFontSize + 'px';
+    });
+
+    titleElement.addEventListener('click', () => {
+        const isHidden = deleteButton.style.display === 'none';
+        deleteButton.style.display = isHidden ? 'block' : 'none';
+        toggleButton.style.display = isHidden ? 'block' : 'none';
+    });
+
+    customMarkerElement.appendChild(toggleButton);
+    customMarkerElement.appendChild(deleteButton);
+}
     return new mapboxgl.Marker({
         element: customMarkerElement,
         draggable: true
