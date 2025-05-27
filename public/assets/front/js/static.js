@@ -425,7 +425,7 @@ function createCustomMarker1(iconClass, title, font) {
 
     
     customMarkerElement.style.color = 'white';
-
+    customMarkerElement.style.height = 'auto';
     var selectedFont = document.getElementById('font-select').value;
     var fontSize = document.getElementById('font-size').value;
 
@@ -433,22 +433,27 @@ function createCustomMarker1(iconClass, title, font) {
     let font1 = font
    if (title) {
     const titleElement = document.createElement('p');
+    
     titleElement.textContent = title;
     titleElement.style.fontFamily = selectedFont;
     titleElement.style.fontSize = ((font1 * fontSize) / gcd) + 'px';
     titleElement.classList.add('dragp');
-   titleElement.style.position = 'relative';
+    titleElement.style.position = 'relative';
     titleElement.style.display = 'inline-block';
     titleElement.style.minWidth = '50px';
     titleElement.style.minHeight = '20px';
     titleElement.style.padding = '5px';
     titleElement.style.border = '1px dashed #aaa';
     titleElement.style.overflow = 'hidden';
+    titleElement.style.height = 'auto';
+    const newHeight = titleElement.scrollHeight;
+    titleElement.style.height = newHeight + 'px';
     customMarkerElement.appendChild(titleElement);
 
-    const initialFontSize = parseFloat(window.getComputedStyle(titleElement).fontSize); 
-    const initialWidth = titleElement.offsetWidth;
-    const initialHeight = titleElement.offsetHeight;
+    let initialFontSize;
+    let initialWidth;
+    let initialHeight;
+    let isResizing = false;
 
     const resizeHandle = document.createElement('div');
     resizeHandle.style.width = '10px';
@@ -461,40 +466,52 @@ function createCustomMarker1(iconClass, title, font) {
     resizeHandle.style.zIndex = '10';
     titleElement.appendChild(resizeHandle);
 
-    let isResizing = false;
+  resizeHandle.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    isResizing = true;
 
-    resizeHandle.addEventListener('mousedown', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        isResizing = true;
-        titleElement.style.border = '1px dashed #aaa'; 
-    });
+    const computedStyle = window.getComputedStyle(titleElement);
+    initialFontSize = parseFloat(computedStyle.fontSize);
+    initialWidth = titleElement.offsetWidth;
+    initialHeight = titleElement.offsetHeight;
+    
+    initialPadding = parseFloat(computedStyle.paddingLeft) || 5;
 
-    document.addEventListener('mousemove', function (e) {
-        if (!isResizing) return;
+    titleElement.style.border = '1px dashed #aaa';
+});
 
-        const rect = titleElement.getBoundingClientRect();
-        const newWidth = e.clientX - rect.left;
-        const newHeight = e.clientY - rect.top;
+document.addEventListener('mousemove', function (e) {
+    if (!isResizing) return;
 
-        const boundedWidth = Math.max(50, Math.min(500, newWidth));
-        const boundedHeight = Math.max(20, Math.min(300, newHeight));
+    const rect = titleElement.getBoundingClientRect();
+    const newWidth = e.clientX - rect.left;
+    const newHeight = e.clientY - rect.top;
 
-        titleElement.style.width = boundedWidth + 'px';
-        titleElement.style.height = boundedHeight + 'px';
+    const boundedWidth = Math.max(50, Math.min(500, newWidth));
+    titleElement.style.width = boundedWidth + 'px';
+    titleElement.style.height = 'auto';
 
-        const widthScale = boundedWidth / initialWidth;
-        const heightScale = boundedHeight / initialHeight;
-        const avgScale = (widthScale + heightScale) / 2;
+    const widthScale = initialWidth ? boundedWidth / initialWidth : 1;
+    const avgScale = widthScale;
 
-        const scaledFontSize = initialFontSize * avgScale;
-        titleElement.style.fontSize = scaledFontSize + 'px';
-    });
+    const scaledFontSize =
+        !isNaN(avgScale) && isFinite(avgScale)
+            ? parseFloat(initialFontSize) * avgScale
+            : parseFloat(initialFontSize);
 
-    document.addEventListener('mouseup', function () {
+    titleElement.style.fontSize = scaledFontSize + 'px';
+
+    const scaledPadding = initialPadding * avgScale;
+    titleElement.style.padding = scaledPadding + 'px';
+});
+
+document.addEventListener('mouseup', function () {
+    if (isResizing) {
         isResizing = false;
-        titleElement.style.border = 'none'; 
-    });
+        titleElement.style.border = 'none';
+    }
+});
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
