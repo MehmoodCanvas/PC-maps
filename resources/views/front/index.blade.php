@@ -160,6 +160,29 @@
             </div>
         </nav>
         @include('front.inc.footer')
+        <script>
+            $(window).resize(function() { 
+                var windowHeight = $(window).height();
+                var mapHeight = windowHeight - 100; 
+                console.log("Window Height: " + windowHeight);
+
+                window.onload = function() {
+                    var windowHeight = $(window).height();
+                    var mapHeight = windowHeight - 100;
+                    console.log("Window Height: " + windowHeight);
+                    if(windowHeight < 630){
+                        $('#menu').addClass('active');
+                    }else{
+                        $('#menu').removeClass('active');
+                    }
+                }
+                if(windowHeight < 630){
+                        $('#menu').addClass('active');
+                    }else{
+                        $('#menu').removeClass('active');
+                    }
+            });
+        </script>
     </body>
 
     </html>

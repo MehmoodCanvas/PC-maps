@@ -117,7 +117,7 @@ input#height-inches {
     padding: 20px;
 }
 #menu.active {
-    right: -320px;
+    right: -380px;
     transition: all 0.25s;
 }
 .mapboxgl-ctrl-top-right {
