@@ -14,5 +14,4 @@ When pressing the button to add a compass rose, there is no way to scale the siz
 
 
     
-Consumer_KEY: ck_dee67e5f0ceded8cd5d7d1d7c65e6bb061a6a2e8
-Consumer_secret: cs_d34cc814430a8da35030348c7ebcc87528068699
+

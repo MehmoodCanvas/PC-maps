@@ -91,7 +91,7 @@ input#height-inches {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 100%;
+    width: calc( 100% - 360px );
 }
 /*#map.active {*/
 /*    width: 100%;*/

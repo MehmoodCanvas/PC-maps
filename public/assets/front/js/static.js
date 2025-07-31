@@ -39,7 +39,22 @@ map.on('wheel', (e) => {
         duration: x`` 
     });
 });
+map.off('wheel');
+map.on('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.originalEvent.deltaY > 0 ? -0.5 : 0.5;
+    const zoom = map.getZoom() + delta;
 
+    const coords = map.unproject([e.originalEvent.offsetX, e.originalEvent.offsetY]);
+
+    map.easeTo({
+        center: coords,
+        zoom: zoom,
+        duration: 300
+    });
+
+    document.getElementById('zoom_count').innerHTML = zoom.toFixed(2);
+});
 
 
 document.getElementById('fly').addEventListener('click', () => {
@@ -196,6 +211,7 @@ map.on('load', () => {
         }
     }
 
+let overlayLocked = false;
 
     function makeWindow() {
 
@@ -242,7 +258,18 @@ map.on('load', () => {
             overlayContainer.style.left = overlayLeft;
             overlayContainer.style.width = `${widthPixels}px`;
             overlayContainer.style.height = `${heightPixels}px`;
+             if (!overlayLocked) {
+            const halfWidth = widthPixels / 2;
+            const halfHeight = heightPixels / 2;
 
+            const overlayTop = `calc(50% - ${halfHeight}px)`;
+            const overlayLeft = `calc(50% - ${halfWidth}px)`;
+
+            overlayContainer.style.top = overlayTop;
+            overlayContainer.style.left = overlayLeft;
+
+            overlayLocked = true; // ✅ lock after first set
+        }
         
         } else {
             alert('Please enter valid width and height in inches.');
@@ -395,8 +422,8 @@ const CompassMaker = new mapboxgl.Marker({
     draggable: true 
 }).setLngLat([mapCenter.lng, mapCenter.lat]);
 CompassMaker.getElement().src = compassimage;
-CompassMaker.getElement().style.width = '30px';
-CompassMaker.getElement().style.height = '30px';
+CompassMaker.getElement().style.width = '90px';
+CompassMaker.getElement().style.height = '90px';
 CompassMaker.getElement().classList.add('custom-marker');
 
 document.getElementById('marker-toggle').addEventListener('click', () => toggleMarkerVisibility(marker));
@@ -554,7 +581,7 @@ document.addEventListener('mouseup', function () {
         toggleButton.style.display = isHidden ? 'block' : 'none';
     });
 
-    customMarkerElement.appendChild(toggleButton);
+    // customMarkerElement.appendChild(toggleButton);
     customMarkerElement.appendChild(deleteButton);
 }
     return new mapboxgl.Marker({

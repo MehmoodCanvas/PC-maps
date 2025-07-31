@@ -1,11 +1,10 @@
 @media only screen and (max-width:1440px){
     .scroll_container {
-    max-height: 365px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 10px;
-    background: #e5dcdc;
-    }
+      max-height: 610px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 10px;
+  }
     .scroll_container::-webkit-scrollbar {
       width: 5px;
     }
