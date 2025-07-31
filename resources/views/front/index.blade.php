@@ -166,7 +166,7 @@
 
                 </div>
             </nav>
-        @include('front.inc.footer')
+@include('front.inc.footer')
         <script>
     jQuery(document).ready(function($)
     {
@@ -184,7 +184,7 @@
             else zoom_level=zoom_level+step;
 
             $('#preview-overlay').css({
-                transform: 'scale('+(zoom_level/100)+')', // set zoom
+                transform: 'scale('+(zoom_level/100)+')',
                 transformOrigin: '50% 0'
             });
 
