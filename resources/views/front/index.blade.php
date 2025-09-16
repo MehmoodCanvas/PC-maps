@@ -27,10 +27,7 @@
                                     <button id="zoom-in"><i class="fa-solid fa-plus"> Zoom In</i></button>
                                     <button id="zoom-out"> <i class="fa-solid fa-minus"> Zoom Out</i></button>
                                 </div>
-                                <div class="form-group_n justify-content-around">
-                                    <button id="zoom-in1"><i class="fa-solid fa-plus"> Zoom In</i></button>
-                                    <button id="zoom-out1"> <i class="fa-solid fa-minus"> Zoom Out</i></button>
-                                </div>
+                                
                             </div>
                             <button id="north-direction" type="button" class="toggle_btn_1"> 
                                 <i class="fa-solid fa-compass"></i> North

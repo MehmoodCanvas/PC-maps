@@ -5,8 +5,35 @@ const map = new mapboxgl.Map({
     style: 'mapbox://styles/keithericparsons77/clo3huwzf002b01qv4k8k436w',
     center: [-74.5, 40],
     zoom: 4,
-    preserveDrawingBuffer: true
+    preserveDrawingBuffer: true,
+       pitch: 0,
+    maxPitch: 0,
+    minPitch: 0
 });
+    map.setPitch(0);          // Ensure completely flat
+    map.setPitch = function(pitch) {
+        console.log('Map tilt disabled - rotation still allowed');
+        return map;
+    };
+const originalEaseTo = map.easeTo.bind(map);
+const originalFlyTo = map.flyTo.bind(map);
+
+map.easeTo = function(options) {
+    if (options && options.pitch !== undefined) {
+        console.log('Removed pitch from easeTo, keeping other options');
+        delete options.pitch;
+    }
+    return originalEaseTo(options);
+};
+
+map.flyTo = function(options) {
+    if (options && options.pitch !== undefined) {
+        console.log('Removed pitch from flyTo, keeping other options');
+        delete options.pitch;
+    }
+    return originalFlyTo(options);
+};
+//New code Finish
 document.getElementById('north-direction').addEventListener('click', () => {
     map.resetNorth();
 });
