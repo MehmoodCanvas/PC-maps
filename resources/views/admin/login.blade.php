@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{asset('assets/admin-theme.css')}}">
     <style>
         body {
-            background: linear-gradient(135deg, #0066cc 0%, #003d99 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e293b 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -25,7 +25,7 @@
             max-width: 450px;
         }
         .login-header {
-            background: linear-gradient(135deg, #0066cc 0%, #003d99 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e293b 100%);
             color: white;
             padding: 40px 30px;
             text-align: center;
@@ -49,52 +49,62 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 14px;
         }
         .form-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s;
         }
         .form-group input:focus {
             outline: none;
-            border-color: #0066cc;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-        .login-button {
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+        .remember-forgot a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+        .btn-login {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #0066cc 0%, #003d99 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        .btn-login:hover {
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
             cursor: pointer;
             transition: opacity 0.3s;
             margin-top: 10px;
         }
         .login-button:hover {
             opacity: 0.9;
-        }
-        .alert {
-            margin-bottom: 20px;
-            border-radius: 6px;
-        }
-        .text-center {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
-        }
-        .text-center a {
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: 600;
         }
     </style>
 </head>

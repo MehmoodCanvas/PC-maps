@@ -318,7 +318,7 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
                         @foreach($orderStatusBreakdown as $status)
                         <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 700; color: #0066cc;">{{$status->count}}</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #3b82f6;">{{$status->count}}</div>
                             <div style="color: #666; font-size: 13px;">{{$status->order_status}}</div>
                         </div>
                         @endforeach

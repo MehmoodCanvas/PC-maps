@@ -9,168 +9,18 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="{{asset('assets/admin-theme.css')}}" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .admin-wrapper {
+        /* Custom styles for this view */
+        .order-status-form {
             display: flex;
-            min-height: 100vh;
+            gap: 5px;
         }
-        .admin-sidebar {
-            width: 260px;
-            background: linear-gradient(135deg, #0066cc 0%, #003d99 100%);
-            color: white;
-            padding: 30px 20px;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-        .admin-sidebar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            text-align: center;
-            padding: 15px 0;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-        }
-        .admin-sidebar .nav-menu {
-            list-style: none;
-        }
-        .admin-sidebar .nav-menu li {
-            margin-bottom: 10px;
-        }
-        .admin-sidebar .nav-menu a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            padding: 12px 15px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .admin-sidebar .nav-menu a:hover,
-        .admin-sidebar .nav-menu a.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
-        }
-        .admin-sidebar .nav-menu i {
-            width: 20px;
-            text-align: center;
-        }
-        .admin-main {
-            margin-left: 260px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .admin-header {
-            background: white;
-            padding: 20px 30px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .admin-header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: #333;
-            margin: 0;
-        }
-        .admin-user-menu {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .admin-user-menu a {
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .admin-content {
-            flex: 1;
-            padding: 30px;
-        }
-        .content-section {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .content-section h2 {
-            color: #333;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .table thead th {
-            background: #f8f9fa;
-            border-bottom: 2px solid #ddd;
-            color: #333;
-            font-weight: 600;
-        }
-        .btn {
-            padding: 6px 12px;
-            font-size: 12px;
+        .order-status-form select {
+            padding: 4px 8px;
             border-radius: 4px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background: #0066cc;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #0052a3;
-            color: white;
-        }
-        .status-form {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .status-form select {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-        .badge {
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .badge.bg-success {
-            background: #d4edda;
-            color: #155724;
-        }
-        .badge.bg-warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-        .badge.bg-danger {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        .alert {
-            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
         }
     </style>
+     
 </head>
 <body>
     <div class="admin-wrapper">
