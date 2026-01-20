@@ -16,50 +16,31 @@ use Illuminate\Support\Facades\Log;
 class Opearation extends Controller
 {
     public function save(Request $request){
-
+        try{
         $validatedData = $request->validate([
-            'data' => 'required|string',
+            'image' => 'required|string',
             'width' => 'required|numeric',
             'height' => 'required|numeric',
-            'text' => 'nullable|string',
-            'compass' => 'nullable|string',
-            'addons' => 'nullable|array',
+            'text' => 'nullable',
+            'compass' => 'nullable|boolean',
+            'addons' => 'nullable|boolean',
         ]);
 
-
+ 
 
         $map = new Map();
         $data = $request->input('image'); 
         $width = $request->input('width'); 
         $height = $request->input('height'); 
-        $text= $request->input('text');
-        $compass= $request->input('compass');
-        $addons= $request->input('addons');
+        $text= $request->input('text') ? 4.99 : 0;
+        $compass= $request->input('compass') ? 4.99 : 0;
+        $addons= $request->input('addons') ? 9.99 : 0;
 
 
-        if($compass ===true){
-             $compass= 4.99;
-        }else{
-            $compass= 0;
-
-        }
-
-        if($text <= 2){
-            $text= 0;
-        }else{
-            $text= 4.99;
-        }
-        if($addons ===true){
-            $addons= 9.99;
-       }else{
-           $addons= 0;
-
-       }
-
-       $frame_init= $height * $width * '2';
-       $frame_add= 4.5 + $frame_init * 4;
-       $frame_plus= $frame_add * 9.6;
-       $frame_total= $frame_plus + 100;
+        $frame_init= $height * $width * '2';
+        $frame_add= 4.5 + $frame_init * 4;
+        $frame_plus= $frame_add * 9.6;
+        $frame_total= $frame_plus + 100;
 
         
         $total = $frame_total * '.70' + $text + $compass + $addons;
@@ -79,6 +60,10 @@ class Opearation extends Controller
         $map->save();
         Storage::disk('public')->put('images/maps/' . $filename, $imageData);
         return response()->json(['message' => 'Image saved successfully', 'filename' => $total]);
+        }catch (\Exception $e){
+            return response()->json(['error' => 'Failed to save image', 'message' => $e->getMessage()], 500);
+        }
+       
     
        }
 
