@@ -608,7 +608,6 @@ document.addEventListener('mouseup', function () {
         toggleButton.style.display = isHidden ? 'block' : 'none';
     });
 
-    // customMarkerElement.appendChild(toggleButton);
     customMarkerElement.appendChild(deleteButton);
 }
     return new mapboxgl.Marker({
@@ -661,63 +660,155 @@ mapX, mapY, overlayWidthPixels, overlayHeightPixels,
 0, 0, overlayWidthPixels, overlayHeightPixels
 );
 
+const imageLoadPromises = [];
+
 const customMarkers = document.querySelectorAll('.custom-marker');
-customMarkers.forEach(marker => {
+console.log('Found custom markers:', customMarkers.length);
+
+customMarkers.forEach((marker, index) => {
 const markerRect = marker.getBoundingClientRect();
 const markerX = markerRect.left - mapRect.left - mapX;
 const markerY = markerRect.top - mapRect.top - mapY;
 
-const textMarker = marker.querySelector('p');
-if (textMarker) {
-    ctx.font = window.getComputedStyle(textMarker).getPropertyValue('font');
-    ctx.fillStyle = window.getComputedStyle(textMarker).getPropertyValue('color');
-    ctx.fillText(textMarker.textContent, markerX, markerY);
-} else {
-    const iconMarker = marker.querySelector('i');
-    if (iconMarker) {
-        const iconHTML = iconMarker.outerHTML.trim();
-        const img = new Image();
-        img.src = `data:image/svg+xml,${encodeURIComponent(iconHTML)}`;
+console.log(`Marker ${index}: X=${markerX}, Y=${markerY}, Width=${markerRect.width}, Height=${markerRect.height}, TagName=${marker.tagName}`);
 
+let imgMarker = marker.querySelector('img');
+if (!imgMarker && marker.tagName === 'IMG') {
+    imgMarker = marker;
+}
+
+if (imgMarker) {
+    console.log('Found img marker:', imgMarker.src, 'Size:', markerRect.width, 'x', markerRect.height);
+    const promise = new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = imgMarker.src;
+        
+        const timeout = setTimeout(() => {
+            console.warn('Image load timeout for:', imgMarker.src);
+            resolve();
+        }, 5000);
+        
         img.onload = function () {
-            ctx.drawImage(img, markerX, markerY);
+            clearTimeout(timeout);
+            console.log('Image loaded, drawing at', markerX, markerY, 'size:', markerRect.width, 'x', markerRect.height);
+            ctx.drawImage(img, markerX, markerY, markerRect.width, markerRect.height);
+            resolve();
         };
         img.onerror = function (error) {
-            console.error("Error loading image:", error);
+            clearTimeout(timeout);
+            console.error("Error loading image:", imgMarker.src, error);
+            resolve();
         };
+    });
+    imageLoadPromises.push(promise);
+} else {
+    const textMarker = marker.querySelector('p');
+    if (textMarker) {
+        console.log('Found text marker:', textMarker.textContent);
+        const textRect = textMarker.getBoundingClientRect();
+        const textX = textRect.left - mapRect.left - mapX;
+        const textY = textRect.top - mapRect.top - mapY;
+        
+        ctx.font = window.getComputedStyle(textMarker).getPropertyValue('font');
+        ctx.fillStyle = window.getComputedStyle(textMarker).getPropertyValue('color');
+        
+        // Draw text at proper position
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText(textMarker.textContent, textX, textY);
+    } else {
+        const iconMarker = marker.querySelector('i');
+        if (iconMarker) {
+            console.log('Found icon marker at', markerX, markerY, 'size:', markerRect.width, 'x', markerRect.height, 'class:', iconMarker.className);
+            
+            if (typeof html2canvas !== 'undefined') {
+                const promise = new Promise((resolve) => {
+                    html2canvas(marker, {
+                        backgroundColor: null,
+                        scale: 1,
+                        useCORS: true
+                    }).then(markerCanvas => {
+                        ctx.drawImage(markerCanvas, markerX, markerY);
+                        console.log('html2canvas rendered icon marker');
+                        resolve();
+                    }).catch(err => {
+                        console.error('html2canvas error:', err);
+                        resolve();
+                    });
+                });
+                imageLoadPromises.push(promise);
+            } else {
+                const centerX = markerX + (markerRect.width / 2);
+                const centerY = markerY + (markerRect.height / 2);
+                const color = window.getComputedStyle(iconMarker).getPropertyValue('color') || 'white';
+                
+                // Draw background circle
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                const radius = Math.min(markerRect.width, markerRect.height) / 2;
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw icon text
+                ctx.fillStyle = 'white';
+                ctx.font = `bold ${radius}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Map Font Awesome classes to Unicode symbols
+                let symbol = '●';
+                if (iconMarker.className.includes('fa-heart')) {
+                    symbol = '♥';
+                } else if (iconMarker.className.includes('fa-home')) {
+                    symbol = '⌂';
+                } else if (iconMarker.className.includes('fa-star')) {
+                    symbol = '★';
+                }
+                
+                ctx.fillText(symbol, centerX, centerY);
+                console.log('Rendered icon marker with symbol:', symbol);
+            }
+        }
     }
 }
 });
 
-const dataURL = captureCanvas.toDataURL('image/png', 1.0);
-const input_widthInches = parseFloat(document.getElementById('width-inches').value);
-const input_heightInches = parseFloat(document.getElementById('height-inches').value);
-const final_count = window.count; 
+console.log('Image promises count:', imageLoadPromises.length);
 
-const compass = document.getElementById('compasss-add').checked;
-const addons = document.getElementById('add-on').checked;
+// Wait for all images to load before saving
+Promise.all(imageLoadPromises).then(() => {
+    console.log('All images loaded, saving canvas');
+    const dataURL = captureCanvas.toDataURL('image/png', 1.0);
+    const input_widthInches = parseFloat(document.getElementById('width-inches').value);
+    const input_heightInches = parseFloat(document.getElementById('height-inches').value);
+    const final_count = window.count; 
 
-fetch('/save-image', {
-method: 'POST',
-headers: {
-    'Content-Type': 'application/json',
-    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-},
-body: JSON.stringify({
-    image: dataURL,
-    width: input_widthInches,
-    height: input_heightInches,
-    text: final_count,
-    compass: compass,
-    addons: addons
-})
-})
-.then(response => response.json())
-.then(data => {
-console.log('Image saved successfully', data);
-})
-.catch(error => {
-console.error('Error saving image:', error);
+    const compass = document.getElementById('compasss-add').checked;
+    const addons = document.getElementById('add-on').checked;
+
+    fetch('/save-image', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    body: JSON.stringify({
+        image: dataURL,
+        width: input_widthInches,
+        height: input_heightInches,
+        text: final_count,
+        compass: compass,
+        addons: addons
+    })
+    })
+    .then(response => response.json())
+    .then(data => {
+    console.log('Image saved successfully', data);
+    })
+    .catch(error => {
+    console.error('Error saving image:', error);
+    });
 });
 } else {
 alert('Overlay container has invalid dimensions.');
