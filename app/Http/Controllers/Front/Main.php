@@ -32,10 +32,10 @@ class Main extends Controller
       
    }
    public function dashboard(){
-      $maps = DB::table('map')->where('map_customer_id',Auth::guard('customer')->user()->customer_id)->orderBy('map_id',"DESC")->get();
-      $orders= DB::table('order')->where('order_member_id',Auth::guard('customer')->user()->customer_id)->join('map','order_map_id','map_id')->orderBy('order_id',"DESC")->get();
-      return view('front.dashboard',compact('maps','orders'));
-
+      $user = Auth::guard('customer')->user();
+      $maps = DB::table('map')->where('map_customer_id', $user->customer_id)->orderBy('map_id',"DESC")->get();
+      $orders = DB::table('order')->where('order_member_id', $user->customer_id)->join('map','order_map_id','map_id')->orderBy('order_id',"DESC")->get();
+      return view('front.dashboard', compact('maps','orders', 'user'));
    }
    
   

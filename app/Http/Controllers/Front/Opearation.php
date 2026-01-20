@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\Setting;
 
 class Opearation extends Controller
 {
@@ -32,18 +33,26 @@ class Opearation extends Controller
         $data = $request->input('image'); 
         $width = $request->input('width'); 
         $height = $request->input('height'); 
-        $text= $request->input('text') ? 4.99 : 0;
-        $compass= $request->input('compass') ? 4.99 : 0;
-        $addons= $request->input('addons') ? 9.99 : 0;
-
-
-        $frame_init= $height * $width * '2';
-        $frame_add= 4.5 + $frame_init * 4;
-        $frame_plus= $frame_add * 9.6;
-        $frame_total= $frame_plus + 100;
-
         
-        $total = $frame_total * '.70' + $text + $compass + $addons;
+        // Get pricing from settings
+        $text = $request->input('text') ? Setting::get('text_addon', 4.99) : 0;
+        $compass = $request->input('compass') ? Setting::get('compass_addon', 4.99) : 0;
+        $addons = $request->input('addons') ? Setting::get('addons_addon', 9.99) : 0;
+
+        // Get pricing multipliers from settings
+        $width_multiplier = Setting::get('width_multiplier', 2);
+        $dpi_multiplier = Setting::get('dpi_multiplier', 4);
+        $scale_multiplier = Setting::get('scale_multiplier', 9.6);
+        $base_addition = Setting::get('base_addition', 4.5);
+        $base_price = Setting::get('base_price', 100);
+        $base_multiplier = Setting::get('base_multiplier', 0.70);
+
+        $frame_init = $height * $width * $width_multiplier;
+        $frame_add = $base_addition + $frame_init * $dpi_multiplier;
+        $frame_plus = $frame_add * $scale_multiplier;
+        $frame_total = $frame_plus + $base_price;
+        
+        $total = $frame_total * $base_multiplier + $text + $compass + $addons;
     
         $image = str_replace('data:image/png;base64,', '', $data);
         $image = str_replace(' ', '+', $image);
