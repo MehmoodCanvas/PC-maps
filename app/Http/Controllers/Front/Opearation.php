@@ -34,12 +34,10 @@ class Opearation extends Controller
         $width = $request->input('width'); 
         $height = $request->input('height'); 
         
-        // Get pricing from settings
         $text = $request->input('text') ? Setting::get('text_addon', 4.99) : 0;
         $compass = $request->input('compass') ? Setting::get('compass_addon', 4.99) : 0;
         $addons = $request->input('addons') ? Setting::get('addons_addon', 9.99) : 0;
 
-        // Get pricing multipliers from settings
         $width_multiplier = Setting::get('width_multiplier', 2);
         $dpi_multiplier = Setting::get('dpi_multiplier', 4);
         $scale_multiplier = Setting::get('scale_multiplier', 9.6);
