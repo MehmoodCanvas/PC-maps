@@ -4,14 +4,14 @@
 <section class="register_first_wrapper">
     <div class="register_left_col">
         <div class="register_first_wrap_img">
-            <img src="assets/front/images/register_img.jpg" class="img-fluid" alt="">
+            <img src="{{asset('assets/front/images/register_img.jpg')}}" class="img-fluid" alt="">
         </div>
     </div>
     <div class="register_right_col">
         <form action="{{url('post-signup')}}" class="w-100" method="POST">
             @csrf
             <div class="register_first_wrap_text">
-                <img src="assets/front/images/logo.png" class="img-fluid" alt="">
+                <img src="{{asset('assets/front/images/logo.png')}}" class="img-fluid" alt="">
                 <h3>Sign Up</h3>
                 <p>Create Your Account PcMaps</p>
             </div>
