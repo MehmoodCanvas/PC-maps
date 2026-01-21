@@ -46,7 +46,6 @@ Route::get('/logout', function () {
 
 });
 
-// Admin Routes
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'login'])->name('admin.login');
     Route::post('/post-login', [AdminAuthController::class, 'postLogin']);

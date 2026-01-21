@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{asset('assets/admin-theme.css')}}" />
     <style>
-        /* Custom profile styles */
         .profile-info-card {
             background: linear-gradient(135deg, #3b82f6 0%, #1e293b 100%);
             color: white;

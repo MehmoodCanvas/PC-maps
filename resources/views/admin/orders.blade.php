@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="{{asset('assets/admin-theme.css')}}" />
     <style>
-        /* Custom styles for this view */
+       
         .order-status-form {
             display: flex;
             gap: 5px;
