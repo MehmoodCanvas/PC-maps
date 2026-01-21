@@ -15,17 +15,24 @@ class Main extends Controller
 
    }
    public function signup(){
-    
+      If(Auth::guard('customer')->check()){
+         return redirect(url('/dashboard'));
+      }
       return view('front.signup');
 
    }
    public function login(){
-    
+      If(Auth::guard('customer')->check()){
+         return redirect(url('/dashboard'));
+      }
       return view('front.login');
 
    }
 
    public function checkout(){
+      if(empty($_GET['id']) || !is_numeric($_GET['id'])  || !isset($_GET['id'])){
+         return redirect(url('/dashboard'));
+      }
       $maps = DB::table('map')->where('map_id',$_GET['id'])->orderBy('map_id',"DESC")->first();
 
       return view('front.checkout',compact('maps'));
