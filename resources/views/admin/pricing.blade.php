@@ -154,6 +154,54 @@
                             </div>
                         </div>
 
+                        <!-- Frame Pricing Section -->
+                        <div class="form-section" style="border-left-color: #f59e0b;">
+                            <h3><i class="fas fa-image"></i> Frame Pricing</h3>
+                            <div class="pricing-info" style="background: #fffbeb; border-left-color: #f59e0b; color: #92400e;">
+                                <i class="fas fa-info-circle"></i> <strong>Frame Cost Formula:</strong> Perimeter (2 × (Width + Height)) × Cost Per Inch × Style Multiplier
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frame_cost_per_inch"><i class="fas fa-ruler"></i> Frame Cost Per Inch ($)</label>
+                                <input type="number" id="frame_cost_per_inch" name="frame_cost_per_inch" step="0.01" min="0" value="{{$pricingSettings['frame_cost_per_inch']}}" required>
+                                <small>Base cost per inch of frame perimeter</small>
+                            </div>
+
+                            <hr style="border-color: #e5e7eb; margin: 20px 0;">
+                            <h4 style="font-size: 14px; color: #374151; margin-bottom: 15px;"><i class="fas fa-palette"></i> Frame Style Multipliers</h4>
+                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">These multipliers are applied to the base cost per inch. For example, 1.0 = base price, 1.5 = 50% more, 2.0 = double.</p>
+
+                            <div class="form-group">
+                                <label for="frame_classic_black">Classic Black Multiplier</label>
+                                <input type="number" id="frame_classic_black" name="frame_classic_black" step="0.01" min="0" value="{{$pricingSettings['frame_classic_black']}}" required>
+                                <small>Multiplier for Classic Black frame style</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frame_natural_wood">Natural Oak Multiplier</label>
+                                <input type="number" id="frame_natural_wood" name="frame_natural_wood" step="0.01" min="0" value="{{$pricingSettings['frame_natural_wood']}}" required>
+                                <small>Multiplier for Natural Oak frame style</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frame_walnut">Walnut Multiplier</label>
+                                <input type="number" id="frame_walnut" name="frame_walnut" step="0.01" min="0" value="{{$pricingSettings['frame_walnut']}}" required>
+                                <small>Multiplier for Walnut frame style</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frame_white_modern">White Modern Multiplier</label>
+                                <input type="number" id="frame_white_modern" name="frame_white_modern" step="0.01" min="0" value="{{$pricingSettings['frame_white_modern']}}" required>
+                                <small>Multiplier for White Modern frame style</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frame_gold">Gold Ornate Multiplier</label>
+                                <input type="number" id="frame_gold" name="frame_gold" step="0.01" min="0" value="{{$pricingSettings['frame_gold']}}" required>
+                                <small>Multiplier for Gold Ornate frame style</small>
+                            </div>
+                        </div>
+
                         <!-- Buttons -->
                         <div class="button-group">
                             <button type="reset" class="btn btn-secondary">Reset</button>

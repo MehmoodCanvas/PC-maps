@@ -81,6 +81,12 @@ class AdminDashboardController extends Controller
             'scale_multiplier' => Setting::get('scale_multiplier', 9.6),
             'base_price' => Setting::get('base_price', 100),
             'base_addition' => Setting::get('base_addition', 4.5),
+            'frame_cost_per_inch' => Setting::get('frame_cost_per_inch', 2.50),
+            'frame_classic_black' => Setting::get('frame_classic_black', 1.0),
+            'frame_natural_wood' => Setting::get('frame_natural_wood', 1.3),
+            'frame_walnut' => Setting::get('frame_walnut', 1.5),
+            'frame_white_modern' => Setting::get('frame_white_modern', 1.2),
+            'frame_gold' => Setting::get('frame_gold', 2.0),
         ];
 
         return view('admin.pricing', compact('pricingSettings'));
@@ -98,6 +104,12 @@ class AdminDashboardController extends Controller
             'scale_multiplier' => 'required|numeric|min:0',
             'base_price' => 'required|numeric|min:0',
             'base_addition' => 'required|numeric|min:0',
+            'frame_cost_per_inch' => 'required|numeric|min:0',
+            'frame_classic_black' => 'required|numeric|min:0',
+            'frame_natural_wood' => 'required|numeric|min:0',
+            'frame_walnut' => 'required|numeric|min:0',
+            'frame_white_modern' => 'required|numeric|min:0',
+            'frame_gold' => 'required|numeric|min:0',
         ]);
 
         foreach ($validated as $key => $value) {

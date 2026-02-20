@@ -29,6 +29,7 @@ class Opearation extends Controller
             'text' => 'nullable',
             'compass' => 'nullable|boolean',
             'addons' => 'nullable|boolean',
+            'frame_style' => 'nullable|string',
         ]);
 
  
@@ -37,6 +38,7 @@ class Opearation extends Controller
         $data = $request->input('image'); 
         $width = $request->input('width'); 
         $height = $request->input('height'); 
+        $frameStyle = $request->input('frame_style', 'none');
         
         $text = $request->input('text') ? Setting::get('text_addon', 4.99) : 0;
         $compass = $request->input('compass') ? Setting::get('compass_addon', 4.99) : 0;
@@ -54,7 +56,22 @@ class Opearation extends Controller
         $frame_plus = $frame_add * $scale_multiplier;
         $frame_total = $frame_plus + $base_price;
         
-        $total = $frame_total * $base_multiplier + $text + $compass + $addons;
+        $frameCost = 0;
+        if ($frameStyle !== 'none') {
+            $perimeter = 2 * ($width + $height);
+            $frameCostPerInch = Setting::get('frame_cost_per_inch', 2.50);
+            $frameBaseCosts = [
+                'classic-black' => Setting::get('frame_classic_black', 1.0),
+                'natural-wood' => Setting::get('frame_natural_wood', 1.3),
+                'walnut' => Setting::get('frame_walnut', 1.5),
+                'white-modern' => Setting::get('frame_white_modern', 1.2),
+                'gold' => Setting::get('frame_gold', 2.0),
+            ];
+            $frameMultiplier = $frameBaseCosts[$frameStyle] ?? 1.0;
+            $frameCost = $perimeter * $frameCostPerInch * $frameMultiplier;
+        }
+
+        $total = $frame_total * $base_multiplier + $text + $compass + $addons + $frameCost;
     
         $image = str_replace('data:image/png;base64,', '', $data);
         $image = str_replace(' ', '+', $image);
@@ -70,7 +87,14 @@ class Opearation extends Controller
         $map->map_customer_id=Auth::guard('customer')->user()->customer_id;
         $map->save();
         Storage::disk('public')->put('images/maps/' . $filename, $imageData);
-        return response()->json(['message' => 'Image saved successfully', 'filename' => $total]);
+        return response()->json([
+            'message' => 'Image saved successfully', 
+            'price' => number_format($total, 2),
+            'map_id' => $map->map_id,
+            'map_cost' => number_format($frame_total * $base_multiplier, 2),
+            'frame_cost' => number_format($frameCost, 2),
+            'frame_style' => $frameStyle,
+        ]);
         }catch (\Exception $e){
             return response()->json(['error' => 'Failed to save image', 'message' => $e->getMessage()], 500);
         }
