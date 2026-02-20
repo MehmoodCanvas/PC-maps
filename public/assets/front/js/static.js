@@ -33,7 +33,6 @@ map.flyTo = function (options) {
     }
     return originalFlyTo(options);
 };
-//New code Finish
 document.getElementById('north-direction').addEventListener('click', () => {
     map.resetNorth();
 });
@@ -263,7 +262,7 @@ map.on('load', () => {
 
 
         if (!isNaN(widthInches) && !isNaN(heightInches) && widthInches > 0 && heightInches > 0) {
-            const dpi = 54; // Set the desired DPI value
+            const dpi = 54;
             const widthPixels = widthInches * dpi;
             const heightPixels = heightInches * dpi;
 
@@ -484,14 +483,12 @@ function createCustomMarker1(iconClass, title, font) {
 
     let font1 = font;
     if (title) {
-        // === WRAPPER for text + controls ===
         const wrapper = document.createElement('div');
         wrapper.style.position = 'relative';
         wrapper.style.display = 'inline-block';
         wrapper.style.minWidth = '60px';
         wrapper.style.minHeight = '24px';
 
-        // === TITLE ELEMENT ===
         const titleElement = document.createElement('p');
         titleElement.textContent = title;
         titleElement.style.fontFamily = selectedFont;
@@ -513,17 +510,14 @@ function createCustomMarker1(iconClass, title, font) {
         titleElement.style.height = newHeight + 'px';
         wrapper.appendChild(titleElement);
 
-        // === RESIZE HANDLE (larger, more visible) ===
         const resizeHandle = document.createElement('div');
         resizeHandle.innerHTML = '⤡';
         resizeHandle.style.cssText = 'width:20px;height:20px;position:absolute;right:-4px;bottom:-4px;cursor:se-resize;z-index:20;border-radius:4px;background:rgba(59,130,246,0.9);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 1px 4px rgba(0,0,0,0.3);touch-action:none;';
         wrapper.appendChild(resizeHandle);
 
-        // === FLOATING TOOLBAR ===
         const toolbar = document.createElement('div');
         toolbar.style.cssText = 'position:absolute;top:-36px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:4px;background:#1a1a2e;border-radius:8px;padding:4px 6px;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:30;white-space:nowrap;';
 
-        // Font size decrease
         const btnMinus = document.createElement('button');
         btnMinus.innerHTML = '<span style="font-size:14px;font-weight:700;">A−</span>';
         btnMinus.style.cssText = 'width:28px;height:28px;border:none;background:rgba(255,255,255,0.1);color:#fff;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;';
@@ -536,7 +530,6 @@ function createCustomMarker1(iconClass, title, font) {
             titleElement.style.fontSize = Math.max(8, cur - 2) + 'px';
         });
 
-        // Font size increase
         const btnPlus = document.createElement('button');
         btnPlus.innerHTML = '<span style="font-size:14px;font-weight:700;">A+</span>';
         btnPlus.style.cssText = 'width:28px;height:28px;border:none;background:rgba(255,255,255,0.1);color:#fff;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;';
@@ -549,7 +542,6 @@ function createCustomMarker1(iconClass, title, font) {
             titleElement.style.fontSize = Math.min(120, cur + 2) + 'px';
         });
 
-        // Delete button
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = '🗑';
         btnDelete.style.cssText = 'width:28px;height:28px;border:none;background:rgba(239,68,68,0.2);color:#ff6b6b;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background 0.15s;margin-left:2px;';
@@ -570,7 +562,6 @@ function createCustomMarker1(iconClass, title, font) {
         toolbar.appendChild(btnDelete);
         wrapper.appendChild(toolbar);
 
-        // === SELECTION STATE ===
         let isSelected = false;
 
         function selectText() {
@@ -587,7 +578,6 @@ function createCustomMarker1(iconClass, title, font) {
             toolbar.style.display = 'none';
         }
 
-        // Click to select/deselect
         wrapper.addEventListener('click', function (e) {
             e.stopPropagation();
             if (!isSelected) {
@@ -595,7 +585,6 @@ function createCustomMarker1(iconClass, title, font) {
             }
         });
 
-        // Show controls on hover (subtle — just dashed border)
         wrapper.addEventListener('mouseenter', function () {
             if (!isSelected) {
                 titleElement.style.border = '1px dashed rgba(255,255,255,0.3)';
@@ -609,12 +598,10 @@ function createCustomMarker1(iconClass, title, font) {
             }
         });
 
-        // Deselect when clicking elsewhere on the map
         document.getElementById('map').addEventListener('click', function () {
             deselectText();
         });
 
-        // === RESIZE LOGIC (mouse + touch) ===
         let initialFontSize, initialWidth, initialHeight, isResizing = false;
 
         function startResize(clientX, clientY) {
@@ -625,7 +612,6 @@ function createCustomMarker1(iconClass, title, font) {
             initialHeight = titleElement.offsetHeight;
             titleElement.style.border = '1px dashed rgba(59,130,246,0.7)';
             document.body.style.cursor = 'se-resize';
-            // Store start position
             resizeHandle._startX = clientX;
             resizeHandle._startY = clientY;
         }
@@ -647,7 +633,6 @@ function createCustomMarker1(iconClass, title, font) {
             document.body.style.cursor = '';
         }
 
-        // Mouse resize
         resizeHandle.addEventListener('mousedown', function (e) {
             e.preventDefault(); e.stopPropagation();
             startResize(e.clientX, e.clientY);
@@ -658,7 +643,6 @@ function createCustomMarker1(iconClass, title, font) {
             document.addEventListener('mouseup', onUp);
         });
 
-        // Touch resize
         resizeHandle.addEventListener('touchstart', function (e) {
             e.preventDefault(); e.stopPropagation();
             var t = e.touches[0];
