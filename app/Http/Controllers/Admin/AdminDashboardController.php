@@ -72,15 +72,10 @@ class AdminDashboardController extends Controller
     public function pricing()
     {
         $pricingSettings = [
+            'map_multiplier' => Setting::get('map_multiplier', 0.8),
             'text_addon' => Setting::get('text_addon', 4.99),
             'compass_addon' => Setting::get('compass_addon', 4.99),
             'addons_addon' => Setting::get('addons_addon', 9.99),
-            'base_multiplier' => Setting::get('base_multiplier', 0.70),
-            'width_multiplier' => Setting::get('width_multiplier', 2),
-            'dpi_multiplier' => Setting::get('dpi_multiplier', 4),
-            'scale_multiplier' => Setting::get('scale_multiplier', 9.6),
-            'base_price' => Setting::get('base_price', 100),
-            'base_addition' => Setting::get('base_addition', 4.5),
             'frame_cost_per_inch' => Setting::get('frame_cost_per_inch', 2.50),
             'frame_classic_black' => Setting::get('frame_classic_black', 1.0),
             'frame_natural_wood' => Setting::get('frame_natural_wood', 1.3),
@@ -95,15 +90,10 @@ class AdminDashboardController extends Controller
     public function updatePricing(Request $request)
     {
         $validated = $request->validate([
+            'map_multiplier' => 'required|numeric|min:0',
             'text_addon' => 'required|numeric|min:0',
             'compass_addon' => 'required|numeric|min:0',
             'addons_addon' => 'required|numeric|min:0',
-            'base_multiplier' => 'required|numeric|min:0',
-            'width_multiplier' => 'required|numeric|min:0',
-            'dpi_multiplier' => 'required|numeric|min:0',
-            'scale_multiplier' => 'required|numeric|min:0',
-            'base_price' => 'required|numeric|min:0',
-            'base_addition' => 'required|numeric|min:0',
             'frame_cost_per_inch' => 'required|numeric|min:0',
             'frame_classic_black' => 'required|numeric|min:0',
             'frame_natural_wood' => 'required|numeric|min:0',

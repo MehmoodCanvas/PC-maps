@@ -44,17 +44,8 @@ class Opearation extends Controller
         $compass = $request->input('compass') ? Setting::get('compass_addon', 4.99) : 0;
         $addons = $request->input('addons') ? Setting::get('addons_addon', 9.99) : 0;
 
-        $width_multiplier = Setting::get('width_multiplier', 2);
-        $dpi_multiplier = Setting::get('dpi_multiplier', 4);
-        $scale_multiplier = Setting::get('scale_multiplier', 9.6);
-        $base_addition = Setting::get('base_addition', 4.5);
-        $base_price = Setting::get('base_price', 100);
-        $base_multiplier = Setting::get('base_multiplier', 0.70);
-
-        $frame_init = $height * $width * $width_multiplier;
-        $frame_add = $base_addition + $frame_init * $dpi_multiplier;
-        $frame_plus = $frame_add * $scale_multiplier;
-        $frame_total = $frame_plus + $base_price;
+        $map_multiplier = Setting::get('map_multiplier', 0.8);
+        $mapBaseCost = ($width * $height) * $map_multiplier;
         
         $frameCost = 0;
         if ($frameStyle !== 'none') {
@@ -71,7 +62,7 @@ class Opearation extends Controller
             $frameCost = $perimeter * $frameCostPerInch * $frameMultiplier;
         }
 
-        $total = $frame_total * $base_multiplier + $text + $compass + $addons + $frameCost;
+        $total = $mapBaseCost + $text + $compass + $addons + $frameCost;
     
         $image = str_replace('data:image/png;base64,', '', $data);
         $image = str_replace(' ', '+', $image);
@@ -91,7 +82,7 @@ class Opearation extends Controller
             'message' => 'Image saved successfully', 
             'price' => number_format($total, 2),
             'map_id' => $map->map_id,
-            'map_cost' => number_format($frame_total * $base_multiplier, 2),
+            'map_cost' => number_format($mapBaseCost, 2),
             'frame_cost' => number_format($frameCost, 2),
             'frame_style' => $frameStyle,
         ]);

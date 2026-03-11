@@ -30,9 +30,21 @@
                         </div>
                         <div class="form-group">
                             <button id="fly">Fly to Location</button>
+                            
                         </div>
+                       
                     </div>
-
+ <div class="form-group form-group-center">
+                            <div class="form-group_f">
+                                <div class="form-group_n mb-2">
+                                    <button id="zoom-in"><i class="fa-solid fa-plus"></i> Zoom In</button>
+                                    <button id="zoom-out"><i class="fa-solid fa-minus"></i> Zoom Out</button>
+                                </div>
+                            </div>
+                            <button id="north-direction" type="button" class="toggle_btn_1"> 
+                                <i class="fa-solid fa-compass"></i> North
+                            </button>
+                        </div>
                     {{-- STEP 2: CHOOSE MAP SIZE --}}
                     <div class="hi_box">
                         <h1 class="heading">2. CHOOSE MAP SIZE</h1>
@@ -44,17 +56,7 @@
                             <button id="preview-button">Preview Size</button>
                         </div>
                         <p class="size-hint">Tip: Sizes from 5" to 84" supported</p>
-                        <div class="form-group form-group-center">
-                            <div class="form-group_f">
-                                <div class="form-group_n mb-2">
-                                    <button id="zoom-in"><i class="fa-solid fa-plus"></i> Zoom In</button>
-                                    <button id="zoom-out"><i class="fa-solid fa-minus"></i> Zoom Out</button>
-                                </div>
-                            </div>
-                            <button id="north-direction" type="button" class="toggle_btn_1"> 
-                                <i class="fa-solid fa-compass"></i> North
-                            </button>
-                        </div>
+                        
                     </div>
 
                     {{-- STEP 3: ADD TEXT --}}

@@ -78,8 +78,8 @@
                     <h2><i class="fas fa-cog"></i> Configure Pricing</h2>
 
                     <div class="pricing-info">
-                        <i class="fas fa-info-circle"></i> <strong>Pricing Formula:</strong> Total = (Frame Price × Base Multiplier) + Addons<br>
-                        Frame Price = ((Height × Width × Width Multiplier) × DPI Multiplier + Base Addition) × Scale Multiplier + Base Price
+                        <i class="fas fa-info-circle"></i> <strong>Pricing Formula:</strong> Total = (Length × Width × Map Multiplier) + Addons + Frame Cost<br>
+                        Frame Cost = Perimeter (2 × (Width + Height)) × Cost Per Inch × Style Multiplier
                     </div>
 
                     <form method="POST" action="{{url('/admin/pricing')}}">
@@ -108,49 +108,13 @@
                             </div>
                         </div>
 
-                        <!-- Base Pricing Section -->
+                        <!-- Map Pricing Section -->
                         <div class="form-section">
-                            <h3><i class="fas fa-layer-group"></i> Base Pricing Configuration</h3>
-
+                            <h3><i class="fas fa-map"></i> Map Base Pricing</h3>
                             <div class="form-group">
-                                <label for="base_price"><i class="fas fa-dollar-sign"></i> Base Price ($)</label>
-                                <input type="number" id="base_price" name="base_price" step="0.01" value="{{$pricingSettings['base_price']}}" required>
-                                <small>Fixed base price component</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="base_addition"><i class="fas fa-plus-circle"></i> Base Addition ($)</label>
-                                <input type="number" id="base_addition" name="base_addition" step="0.01" value="{{$pricingSettings['base_addition']}}" required>
-                                <small>Addition to frame calculation before multipliers</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="base_multiplier">Base Multiplier</label>
-                                <input type="number" id="base_multiplier" name="base_multiplier" step="0.01" min="0.01" value="{{$pricingSettings['base_multiplier']}}" required>
-                                <small>Final multiplier applied to frame price (typically 0.70)</small>
-                            </div>
-                        </div>
-
-                        <!-- Calculation Multipliers -->
-                        <div class="form-section">
-                            <h3><i class="fas fa-calculator"></i> Calculation Multipliers</h3>
-
-                            <div class="form-group">
-                                <label for="width_multiplier">Width Multiplier</label>
-                                <input type="number" id="width_multiplier" name="width_multiplier" step="0.01" min="0.01" value="{{$pricingSettings['width_multiplier']}}" required>
-                                <small>Multiplier for map width in frame calculation</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="dpi_multiplier">DPI Multiplier</label>
-                                <input type="number" id="dpi_multiplier" name="dpi_multiplier" step="0.01" min="0.01" value="{{$pricingSettings['dpi_multiplier']}}" required>
-                                <small>Multiplier for DPI-related calculations</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="scale_multiplier">Scale Multiplier</label>
-                                <input type="number" id="scale_multiplier" name="scale_multiplier" step="0.01" min="0.01" value="{{$pricingSettings['scale_multiplier']}}" required>
-                                <small>Final scale multiplier applied to frame</small>
+                                <label for="map_multiplier">Map Multiplier</label>
+                                <input type="number" id="map_multiplier" name="map_multiplier" step="0.01" min="0.01" value="{{$pricingSettings['map_multiplier'] ?? 0.8}}" required>
+                                <small>Multiplier for (Length × Width) to determine base map cost (e.g. 0.8)</small>
                             </div>
                         </div>
 
