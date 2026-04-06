@@ -48,7 +48,7 @@ class AdminDashboardController extends Controller
         $orders = DB::table('order')
             ->join('customer', 'order_member_id', 'customer_id')
             ->join('map', 'order_map_id', 'map_id')
-            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height', 'map.map_data')
+            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height', 'map.map_data', 'map.map_frame')
             ->orderBy('order_id', 'DESC')
             ->paginate(20);
 
@@ -77,14 +77,19 @@ class AdminDashboardController extends Controller
             'compass_addon' => Setting::get('compass_addon', 4.99),
             'addons_addon' => Setting::get('addons_addon', 9.99),
             'frame_cost_per_inch' => Setting::get('frame_cost_per_inch', 2.50),
-            'frame_classic_black' => Setting::get('frame_classic_black', 1.0),
-            'frame_natural_wood' => Setting::get('frame_natural_wood', 1.3),
-            'frame_walnut' => Setting::get('frame_walnut', 1.5),
-            'frame_white_modern' => Setting::get('frame_white_modern', 1.2),
-            'frame_gold' => Setting::get('frame_gold', 2.0),
         ];
 
-        return view('admin.pricing', compact('pricingSettings'));
+        $frames = scandir(public_path('frames'));
+        $frames = array_filter($frames, function($file) {
+            return !in_array($file, ['.', '..']) && !is_dir(public_path('frames/' . $file));
+        });
+
+        $frameMultipliers = [];
+        foreach($frames as $frame) {
+            $frameMultipliers[$frame] = Setting::get('frame_multiplier_' . str_replace(' ', '_', $frame), 1.2);
+        }
+
+        return view('admin.pricing', compact('pricingSettings', 'frameMultipliers'));
     }
 
     public function updatePricing(Request $request)
@@ -95,15 +100,16 @@ class AdminDashboardController extends Controller
             'compass_addon' => 'required|numeric|min:0',
             'addons_addon' => 'required|numeric|min:0',
             'frame_cost_per_inch' => 'required|numeric|min:0',
-            'frame_classic_black' => 'required|numeric|min:0',
-            'frame_natural_wood' => 'required|numeric|min:0',
-            'frame_walnut' => 'required|numeric|min:0',
-            'frame_white_modern' => 'required|numeric|min:0',
-            'frame_gold' => 'required|numeric|min:0',
         ]);
 
         foreach ($validated as $key => $value) {
             Setting::set($key, $value, 'number');
+        }
+
+        if ($request->has('frame_multipliers')) {
+            foreach ($request->frame_multipliers as $frameFile => $multiplier) {
+                Setting::set('frame_multiplier_' . str_replace(' ', '_', $frameFile), $multiplier, 'number');
+            }
         }
 
         return redirect()->back()->with('success', 'Pricing settings updated successfully');

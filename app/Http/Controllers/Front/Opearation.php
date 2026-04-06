@@ -51,14 +51,7 @@ class Opearation extends Controller
         if ($frameStyle !== 'none') {
             $perimeter = 2 * ($width + $height);
             $frameCostPerInch = Setting::get('frame_cost_per_inch', 2.50);
-            $frameBaseCosts = [
-                'classic-black' => Setting::get('frame_classic_black', 1.0),
-                'natural-wood' => Setting::get('frame_natural_wood', 1.3),
-                'walnut' => Setting::get('frame_walnut', 1.5),
-                'white-modern' => Setting::get('frame_white_modern', 1.2),
-                'gold' => Setting::get('frame_gold', 2.0),
-            ];
-            $frameMultiplier = $frameBaseCosts[$frameStyle] ?? 1.0;
+            $frameMultiplier = Setting::get('frame_multiplier_' . str_replace(' ', '_', $frameStyle), 1.2);
             $frameCost = $perimeter * $frameCostPerInch * $frameMultiplier;
         }
 
@@ -73,6 +66,9 @@ class Opearation extends Controller
         $map->map_width=$width;
         $map->map_height=$height;
         $map->map_price=$total;
+        $map->map_base_cost=$mapBaseCost;
+        $map->map_addon_cost=$text + $compass + $addons;
+        $map->map_frame=$frameStyle;
         $filename = Str::uuid() . time() . '.png';
         $map->map_image=$filename;
         $map->map_customer_id=Auth::guard('customer')->user()->customer_id;
@@ -91,6 +87,47 @@ class Opearation extends Controller
         }
        
     
+       }
+
+       public function updateFrame(Request $request) {
+           try {
+               $validatedData = $request->validate([
+                   'map_id' => 'required|numeric',
+                   'frame_style' => 'nullable|string',
+               ]);
+
+               $map = Map::find($request->map_id);
+               if (!$map) {
+                   return response()->json(['error' => 'Map not found'], 404);
+               }
+
+               $frameStyle = $request->input('frame_style', 'none');
+               $width = $map->map_width;
+               $height = $map->map_height;
+
+               $frameCost = 0;
+               if ($frameStyle !== 'none') {
+                   $perimeter = 2 * ($width + $height);
+                   $frameCostPerInch = Setting::get('frame_cost_per_inch', 2.50);
+                   $frameMultiplier = Setting::get('frame_multiplier_' . str_replace(' ', '_', $frameStyle), 1.2);
+                   $frameCost = $perimeter * $frameCostPerInch * $frameMultiplier;
+               }
+
+               $map->map_price = $map->map_base_cost + $map->map_addon_cost + $frameCost;
+               $map->map_frame = $frameStyle;
+               $map->save();
+
+               return response()->json([
+                   'message' => 'Frame updated successfully',
+                   'new_price' => number_format($map->map_price, 2),
+                   'frame_cost' => number_format($frameCost, 2),
+                   'map_id' => $map->map_id,
+                   'frame_style' => $frameStyle
+               ]);
+
+           } catch (\Exception $e) {
+               return response()->json(['error' => 'Failed to update frame', 'message' => $e->getMessage()], 500);
+           }
        }
 
        public function createOrder(Request $request)

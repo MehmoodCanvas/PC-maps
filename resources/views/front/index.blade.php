@@ -111,37 +111,8 @@
                         <p class="size-hint">Click to add, then drag to position on map</p>
                     </div>
 
-                    {{-- STEP 5: SELECT FRAME --}}
-                    <div class="hi_box">
-                        <h1 class="heading">5. SELECT FRAME (OPTIONAL)</h1>
-                        <input type="hidden" id="frame_style" name="frame_style" value="none">
-                        <div class="frame-selector" id="frame-selector">
-                            <div class="frame-option active" data-frame="none">
-                                <div class="frame-thumb frame-thumb-none"><div class="frame-thumb-inner"></div></div>
-                                <span>No Frame</span>
-                            </div>
-                            <div class="frame-option" data-frame="classic-black">
-                                <div class="frame-thumb frame-thumb-black"><div class="frame-thumb-inner"></div></div>
-                                <span>Classic Black</span>
-                            </div>
-                            <div class="frame-option" data-frame="natural-wood">
-                                <div class="frame-thumb frame-thumb-wood"><div class="frame-thumb-inner"></div></div>
-                                <span>Natural Oak</span>
-                            </div>
-                            <div class="frame-option" data-frame="walnut">
-                                <div class="frame-thumb frame-thumb-walnut"><div class="frame-thumb-inner"></div></div>
-                                <span>Walnut</span>
-                            </div>
-                            <div class="frame-option" data-frame="white-modern">
-                                <div class="frame-thumb frame-thumb-white"><div class="frame-thumb-inner"></div></div>
-                                <span>White Modern</span>
-                            </div>
-                            <div class="frame-option" data-frame="gold">
-                                <div class="frame-thumb frame-thumb-gold"><div class="frame-thumb-inner"></div></div>
-                                <span>Gold Ornate</span>
-                            </div>
-                        </div>
-                    </div>
+                    {{-- Hidden frame_style defaults to none here, will be chosen on detail page --}}
+                    <input type="hidden" id="frame_style" name="frame_style" value="none">
 
                     {{-- Hidden checkboxes for JS compatibility --}}
                     <input type="checkbox" name="add_on" id="add-on" style="display:none;">

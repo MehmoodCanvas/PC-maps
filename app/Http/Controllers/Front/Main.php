@@ -14,6 +14,21 @@ class Main extends Controller
       return view('front.index');
 
    }
+   public function mapDetail(Request $request) {
+      if(empty($request->id) || !is_numeric($request->id)) {
+          return redirect(url('/dashboard'));
+      }
+      $map = DB::table('map')->where('map_id', $request->id)->first();
+      if(!$map) {
+          return redirect(url('/dashboard'));
+      }
+      $frames = scandir(public_path('frames'));
+      $frames = array_filter($frames, function($file) {
+          return !in_array($file, ['.', '..']);
+      });
+
+      return view('front.map_detail', compact('map', 'frames'));
+   }
    public function signup(){
       If(Auth::guard('customer')->check()){
          return redirect(url('/dashboard'));

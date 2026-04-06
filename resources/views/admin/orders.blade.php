@@ -68,6 +68,7 @@
                                 <th>Order ID</th>
                                 <th>Customer</th>
                                 <th>Map Size</th>
+                                <th>Frame</th>
                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -83,6 +84,13 @@
                                     <small style="color: #999;">{{$order->customer_email}}</small>
                                 </td>
                                 <td>{{$order->map_width}}" × {{$order->map_height}}"</td>
+                                <td>
+                                    @if($order->map_frame && $order->map_frame !== 'none')
+                                        <span class="badge bg-secondary">{{str_replace(' background removed.png', '', $order->map_frame)}}</span>
+                                    @else
+                                        <small style="color: #ccc;">None</small>
+                                    @endif
+                                </td>
                                 <td>${{number_format($order->order_total_amount, 2)}}</td>
                                 <td>
                                     @if($order->order_status === 'Completed')

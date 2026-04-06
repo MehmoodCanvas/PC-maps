@@ -132,38 +132,17 @@
                             </div>
 
                             <hr style="border-color: #e5e7eb; margin: 20px 0;">
-                            <h4 style="font-size: 14px; color: #374151; margin-bottom: 15px;"><i class="fas fa-palette"></i> Frame Style Multipliers</h4>
+                            <h4 style="font-size: 14px; color: #374151; margin-bottom: 15px;"><i class="fas fa-palette"></i> Frame Style Multipliers (From public/frames)</h4>
                             <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">These multipliers are applied to the base cost per inch. For example, 1.0 = base price, 1.5 = 50% more, 2.0 = double.</p>
 
+                            @foreach($frameMultipliers as $frameFile => $multiplier)
                             <div class="form-group">
-                                <label for="frame_classic_black">Classic Black Multiplier</label>
-                                <input type="number" id="frame_classic_black" name="frame_classic_black" step="0.01" min="0" value="{{$pricingSettings['frame_classic_black']}}" required>
-                                <small>Multiplier for Classic Black frame style</small>
+                                <label for="frame_{{str_replace(' ', '_', $frameFile)}}">{{str_replace(' background removed.png', '', $frameFile)}} Multiplier</label>
+                                <input type="number" id="frame_{{str_replace(' ', '_', $frameFile)}}" name="frame_multipliers[{{$frameFile}}]" step="0.01" min="0" value="{{ $multiplier }}" required>
+                                <small>Multiplier for frame file: {{ $frameFile }}</small>
                             </div>
+                            @endforeach
 
-                            <div class="form-group">
-                                <label for="frame_natural_wood">Natural Oak Multiplier</label>
-                                <input type="number" id="frame_natural_wood" name="frame_natural_wood" step="0.01" min="0" value="{{$pricingSettings['frame_natural_wood']}}" required>
-                                <small>Multiplier for Natural Oak frame style</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="frame_walnut">Walnut Multiplier</label>
-                                <input type="number" id="frame_walnut" name="frame_walnut" step="0.01" min="0" value="{{$pricingSettings['frame_walnut']}}" required>
-                                <small>Multiplier for Walnut frame style</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="frame_white_modern">White Modern Multiplier</label>
-                                <input type="number" id="frame_white_modern" name="frame_white_modern" step="0.01" min="0" value="{{$pricingSettings['frame_white_modern']}}" required>
-                                <small>Multiplier for White Modern frame style</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="frame_gold">Gold Ornate Multiplier</label>
-                                <input type="number" id="frame_gold" name="frame_gold" step="0.01" min="0" value="{{$pricingSettings['frame_gold']}}" required>
-                                <small>Multiplier for Gold Ornate frame style</small>
-                            </div>
                         </div>
 
                         <!-- Buttons -->

@@ -286,6 +286,16 @@
                                     <span class="detail-label">Format:</span>
                                     <span class="detail-value">High Resolution PNG</span>
                                 </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Frame:</span>
+                                    <span class="detail-value">
+                                        @if($maps->map_frame && $maps->map_frame !== 'none')
+                                            {{str_replace(' background removed.png', '', $maps->map_frame)}}
+                                        @else
+                                            None
+                                        @endif
+                                    </span>
+                                </div>
                                 <div class="price-total">
                                     <span class="label">Order Total:</span>
                                     <span class="amount">${{$maps->map_price}}</span>

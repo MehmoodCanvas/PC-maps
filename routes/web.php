@@ -34,7 +34,9 @@ Route::POST('/post-signup', [Account::class,'register']);
 Route::middleware([EnsureLogin::class])->group(function () {
     Route::get('/dashboard', [Main::class,'dashboard']);
     Route::get('/create-map', [Main::class,'index']);
+    Route::get('/map-detail', [Main::class, 'mapDetail']);
     Route::post('/save-image', [Opearation::class,'save']);
+    Route::post('/update-map-frame', [Opearation::class, 'updateFrame']);
     Route::post('/post-create-order', [Opearation::class,'createOrder']);
     Route::post('/orders/{id}/capture', [Opearation::class,'captureOrder']);
     Route::post('/update-profile', [Account::class,'updateProfile']);

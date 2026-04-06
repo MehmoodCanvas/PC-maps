@@ -167,65 +167,6 @@ map.on('load', () => {
 
 
 
-    function toggleLayer(layerId) {
-        const visibility = map.getLayoutProperty(layerId, 'visibility');
-        if (layerId === 'water') {
-            const visibility1 = map.getLayoutProperty('waterway', 'visibility');
-        }
-        if (layerId === 'roads') {
-            const visibility2 = map.getLayoutProperty('aeroway-line', 'visibility');
-
-            const visibility3 = map.getLayoutProperty('road-simple', 'visibility');
-
-        }
-        if (visibility === 'visible') {
-            map.setLayoutProperty(layerId, 'visibility', 'none');
-            if (layerId === 'water') {
-                map.setLayoutProperty('waterway', 'visibility', 'none');
-            }
-            if (layerId === 'roads') {
-                map.setLayoutProperty('aeroway-line', 'visibility', 'none');
-                map.setLayoutProperty('road-simple', 'visibility', 'none');
-
-            }
-        } else {
-            map.setLayoutProperty(layerId, 'visibility', 'visible');
-            if (layerId === 'water') {
-                map.setLayoutProperty('waterway', 'visibility', 'visible');
-            }
-            if (layerId === 'roads') {
-                map.setLayoutProperty('aeroway-line', 'visibility', 'visible');
-
-                map.setLayoutProperty('road-simple', 'visibility', 'visible');
-            }
-        }
-    }
-
-    const toggleableLayerIds = ['roads', 'water', 'land'];
-
-    for (const id of toggleableLayerIds) {
-        if (document.getElementById(id)) {
-            continue;
-        }
-
-        const link = document.createElement('a');
-        link.id = id;
-        link.href = '#';
-        link.textContent = id;
-        link.className = 'active';
-
-        link.onclick = function (e) {
-            const clickedLayer = this.textContent;
-            e.preventDefault();
-            e.stopPropagation();
-            toggleLayer(clickedLayer);
-            this.classList.toggle('active');
-        };
-
-        const layers = document.getElementById('menu');
-        layers.appendChild(link);
-    }
-
     const overlay = document.getElementById('preview-overlay');
     overlay.style.display = 'none';
 
@@ -239,136 +180,61 @@ map.on('load', () => {
 
     let overlayLocked = false;
 
-    function makeWindow() {
+    function getResponsiveDPI(wInches, hInches) {
+        const mapCanvas = map.getCanvas();
+        const padding = 60; 
+        const maxWidth = mapCanvas.offsetWidth - padding;
+        const maxHeight = mapCanvas.offsetHeight - padding;
+        
+        const dpiW = maxWidth / wInches;
+        const dpiH = maxHeight / hInches;
+        
+        return Math.min(dpiW, dpiH, 45);
+    }
 
+    function makeWindow() {
+        window.gcd = 1; // Default to 1 for text scaling compatibility
         const input_widthInches = parseFloat(document.getElementById('width-inches').value);
         const input_heightInches = parseFloat(document.getElementById('height-inches').value);
 
+        if (!isNaN(input_widthInches) && !isNaN(input_heightInches) && input_widthInches > 0 && input_heightInches > 0) {
+            const dpi = getResponsiveDPI(input_widthInches, input_heightInches);
+            const widthPixels = input_widthInches * dpi;
+            const heightPixels = input_heightInches * dpi;
 
-        gcd = 1;
-
-
-        var widthInches = input_widthInches / gcd;
-        var heightInches = input_heightInches / gcd;
-
-        if (input_widthInches < 15 || input_heightInches < 8 || document.getElementById('width-inches').value == document.getElementById('height-inches').value) {
-            widthInches = input_widthInches;
-            heightInches = input_heightInches;
-            gcd = 1;
-        }
-
-        document.getElementById('overlay-width').textContent = `Width: ${input_widthInches} inches`;
-        document.getElementById('overlay-height').textContent = `Height: ${input_heightInches} inches`;
-
-
-        if (!isNaN(widthInches) && !isNaN(heightInches) && widthInches > 0 && heightInches > 0) {
-            const dpi = 54;
-            const widthPixels = widthInches * dpi;
-            const heightPixels = heightInches * dpi;
-
-            const mapCenter = map.getCenter();
             const halfWidth = widthPixels / 2;
             const halfHeight = heightPixels / 2;
 
-            const mapContainer = document.getElementById('map-container');
             const overlayContainer = document.getElementById('overlay-container');
 
             overlay.style.display = 'block';
-            overlay.style.width = `${widthPixels}px`;
-            overlay.style.height = `${heightPixels}px`;
+            overlay.style.width = widthPixels + 'px';
+            overlay.style.height = heightPixels + 'px';
 
-            const overlayTop = `calc(50% - ${halfHeight}px)`;
-            const overlayLeft = `calc(50% - ${halfWidth}px)`;
+            const overlayTop = 'calc(50% - ' + halfHeight + 'px)';
+            const overlayLeft = 'calc(50% - ' + halfWidth + 'px)';
 
             overlayContainer.style.top = overlayTop;
             overlayContainer.style.left = overlayLeft;
-            overlayContainer.style.width = `${widthPixels}px`;
-            overlayContainer.style.height = `${heightPixels}px`;
-            if (!overlayLocked) {
-                const halfWidth = widthPixels / 2;
-                const halfHeight = heightPixels / 2;
+            overlayContainer.style.width = widthPixels + 'px';
+            overlayContainer.style.height = heightPixels + 'px';
 
-                const overlayTop = `calc(50% - ${halfHeight}px)`;
-                const overlayLeft = `calc(50% - ${halfWidth}px)`;
-
-                overlayContainer.style.top = overlayTop;
-                overlayContainer.style.left = overlayLeft;
-
-                overlayLocked = true; // ✅ lock after first set
-            }
-
+            document.getElementById('overlay-width').textContent = 'Width: ' + input_widthInches + ' inches';
+            document.getElementById('overlay-height').textContent = 'Height: ' + input_heightInches + ' inches';
         } else {
             alert('Please enter valid width and height in inches.');
         }
     }
 
-
     makeWindow();
 
     document.getElementById('preview-button').addEventListener('click', () => {
-        const input_widthInches = parseFloat(document.getElementById('width-inches').value);
-        const input_heightInches = parseFloat(document.getElementById('height-inches').value);
-
-
-        gcd = findGCD(input_widthInches, input_heightInches);
-
-
-
-        var widthInches = input_widthInches
-        var heightInches = input_heightInches
-
-
-        if (input_widthInches < 15 || input_heightInches < 8 || document.getElementById('width-inches').value == document.getElementById('height-inches').value) {
-            widthInches = input_widthInches;
-            heightInches = input_heightInches;
-            gcd = 1;
-        }
-
-        document.getElementById('overlay-width').textContent = `Width: ${input_widthInches} inches`;
-        document.getElementById('overlay-height').textContent = `Height: ${input_heightInches} inches`;
-
-
-        if (!isNaN(widthInches) && !isNaN(heightInches) && widthInches > 0 && heightInches > 0) {
-            var dpi = 43;
-
-            const widthPixels = widthInches * dpi;
-            const heightPixels = heightInches * dpi;
-
-            const mapCenter = map.getCenter();
-            const halfWidth = widthPixels / 2;
-            const halfHeight = heightPixels / 2;
-
-            const mapContainer = document.getElementById('map-container');
-            const overlayContainer = document.getElementById('overlay-container');
-
-            overlay.style.display = 'block';
-            overlay.style.width = `${widthPixels}px`;
-            overlay.style.height = `${heightPixels}px`;
-
-            const overlayTop = `calc(50% - ${halfHeight}px)`;
-            const overlayLeft = `calc(50% - ${halfWidth}px)`;
-
-            overlayContainer.style.top = overlayTop;
-            overlayContainer.style.left = overlayLeft;
-            overlayContainer.style.width = `${widthPixels}px`;
-            overlayContainer.style.height = `${heightPixels}px`;
-
-
-        } else {
-            alert('Please enter valid width and height in inches.');
-        }
+        makeWindow();
     });
 
     document.getElementById('dpi-slider').addEventListener('input', () => {
-        const dpiValue = 43;
-
-        document.getElementById('dpi-value').textContent = dpiValue;
-
-        document.getElementById('preview-button').click();
+        makeWindow();
     });
-
-
-
 });
 
 // map.addControl(new MapboxExportControl({
@@ -866,13 +732,8 @@ $('#downloadLink').click(function () {
                     // Hide loading overlay
                     var loadingEl = document.getElementById('save-loading');
                     if (loadingEl) loadingEl.style.display = 'none';
-                    if (data.price && data.map_id) {
-                        document.getElementById('pm-price').textContent = '$' + parseFloat(data.price).toFixed(2);
-                        document.getElementById('pm-width').textContent = input_widthInches + '"';
-                        document.getElementById('pm-height').textContent = input_heightInches + '"';
-                        document.getElementById('pm-frame').textContent = frameValue === 'none' ? 'No Frame' : frameValue.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                        document.getElementById('pm-checkout-btn').href = '/checkout?id=' + data.map_id;
-                        document.getElementById('price-modal').style.display = 'flex';
+                    if (data.map_id) {
+                        window.location.href = '/map-detail?id=' + data.map_id;
                     }
                 })
                 .catch(error => {
@@ -912,30 +773,4 @@ document.getElementById('zoom-out').addEventListener('click', () => {
     map.zoomOut();
 });
 
-// Frame selection logic (div-based with data-frame attributes)
-document.querySelectorAll('.frame-option').forEach(function (option) {
-    option.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.querySelectorAll('.frame-option').forEach(function (o) { o.classList.remove('active'); });
-        this.classList.add('active');
-        var frameVal = this.getAttribute('data-frame');
-        // Update hidden input
-        var hiddenInput = document.getElementById('frame_style');
-        if (hiddenInput) hiddenInput.value = frameVal;
-        // Update overlay frame preview
-        var overlay = document.getElementById('preview-overlay');
-        overlay.classList.remove('frame-classic-black', 'frame-natural-wood', 'frame-walnut', 'frame-gold', 'frame-white-modern');
-        if (frameVal !== 'none') {
-            overlay.classList.add('frame-' + frameVal);
-        }
-    });
-});
-
-// Price modal close
-document.getElementById('pm-close-btn').addEventListener('click', function () {
-    document.getElementById('price-modal').style.display = 'none';
-});
-document.getElementById('pm-decline-btn').addEventListener('click', function () {
-    document.getElementById('price-modal').style.display = 'none';
-});
+// Frame selection and sidebars are now handled on map-detail page
