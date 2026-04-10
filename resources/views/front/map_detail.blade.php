@@ -221,7 +221,7 @@
         <!-- Map Preview -->
         <div class="map-preview-card">
             <div class="map-image-container" id="mapCombinedPreview">
-                <img src="{{Storage::url('images/maps/' . $map->map_image)}}" id="mainMapImage" alt="Your Map">
+                <img src="{{Storage::disk('public')->url('images/maps/' . $map->map_image)}}" id="mainMapImage" alt="Your Map">
                 <div id="frameEffectOverlay" class="frame-active-overlay"></div>
             </div>
         </div>

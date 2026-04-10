@@ -71,9 +71,20 @@ class Opearation extends Controller
         $map->map_frame=$frameStyle;
         $filename = Str::uuid() . time() . '.png';
         $map->map_image=$filename;
-        $map->map_customer_id=Auth::guard('customer')->user()->customer_id;
+        $map->map_customer_id = Auth::guard('customer')->user()->customer_id;
         $map->save();
-        Storage::disk('public')->put('images/maps/' . $filename, $imageData);
+
+        if (!Storage::disk('public')->exists('images/maps')) {
+            Storage::disk('public')->makeDirectory('images/maps');
+        }
+
+        $saved = Storage::disk('public')->put('images/maps/' . $filename, $imageData);
+        
+        if (!$saved) {
+            Log::error("Failed to save map image to disk for map ID: " . $map->map_id);
+            return response()->json(['error' => 'Failed to save image file to disk'], 500);
+        }
+
         return response()->json([
             'message' => 'Image saved successfully', 
             'price' => number_format($total, 2),
@@ -82,7 +93,7 @@ class Opearation extends Controller
             'frame_cost' => number_format($frameCost, 2),
             'frame_style' => $frameStyle,
         ]);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to save image', 'message' => $e->getMessage()], 500);
         }
        
