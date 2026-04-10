@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing Settings - Admin Panel</title>
-    <link rel="stylesheet" href="{{asset('public/assets/front/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/front/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{{asset('public/assets/admin-theme.css')}}" />
+    <link rel="stylesheet" href="{{asset('assets/admin-theme.css')}}" />
     <style>
         .content-section {
             max-width: 800px;
@@ -156,6 +156,6 @@
         </div>
     </div>
 
-    <script src="{{asset('public/assets/front/js/bootstrap.min.js')}}"></script>
+    <script src="{{asset('assets/front/js/bootstrap.min.js')}}"></script>
 </body>
 </html>
