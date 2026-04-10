@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - PC Maps</title>
-    <link rel="stylesheet" href="{{asset('assets/front/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/assets/front/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
-    <link rel="stylesheet" href="{{asset('assets/admin-theme.css')}}" />
+    <link rel="stylesheet" href="{{asset('public/assets/admin-theme.css')}}" />
     <style>
         * {
             margin: 0;
@@ -367,8 +367,8 @@
         </div>
     </div>
 
-    <script src="{{asset('assets/front/js/bootstrap.min.js')}}"></script>
-    <script src="{{asset('assets/front/js/jquery-3.6.3.min.js')}}"></script>
+    <script src="{{asset('public/assets/front/js/bootstrap.min.js')}}"></script>
+    <script src="{{asset('public/assets/front/js/jquery-3.6.3.min.js')}}"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
     <script>
         new DataTable('#recentOrdersTable', {

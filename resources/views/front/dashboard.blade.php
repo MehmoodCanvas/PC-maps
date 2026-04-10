@@ -6,8 +6,8 @@
     <title>Dashboard - PC Maps</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="robots" content="noindex" />
-    <link rel="icon" href="{{asset('assets/front/images/favicon.ico')}}">
-    <link rel="stylesheet" href="{{asset('assets/front/css/bootstrap.min.css')}}">
+    <link rel="icon" href="{{asset('public/assets/front/images/favicon.ico')}}">
+    <link rel="stylesheet" href="{{asset('public/assets/front/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -668,7 +668,7 @@
     <!-- Sidebar -->
     <aside class="dash-sidebar" id="dashSidebar">
         <div class="dash-sidebar-logo">
-            <img src="{{asset('assets/front/images/logo.png')}}" alt="PC Maps">
+            <img src="{{asset('public/assets/front/images/logo.png')}}" alt="PC Maps">
         </div>
         <nav class="dash-sidebar-nav">
             <button class="dash-nav-item active" data-tab="orders">
@@ -704,9 +704,9 @@
             </div>
             <div class="dash-user-menu" id="userMenu">
                 @if($user->customer_profile_picture && Storage::exists('public/' . $user->customer_profile_picture))
-                    <img src="{{asset('storage/' . $user->customer_profile_picture)}}" class="dash-user-avatar" alt="Profile">
+                    <img src="{{asset('public/storage/' . $user->customer_profile_picture)}}" class="dash-user-avatar" alt="Profile">
                 @else
-                    <img src="{{asset('assets/front/images/d-user-icon.png')}}" class="dash-user-avatar" alt="Profile">
+                    <img src="{{asset('public/assets/front/images/d-user-icon.png')}}" class="dash-user-avatar" alt="Profile">
                 @endif
                 <div class="dash-user-info">
                     <div class="dash-user-name">{{Auth::guard('customer')->user()->customer_name}}</div>
@@ -876,9 +876,9 @@
                             @csrf
                             <div class="profile-avatar-section">
                                 @if($user->customer_profile_picture && Storage::exists('public/' . $user->customer_profile_picture))
-                                    <img id="profilePreview" src="{{asset('storage/' . $user->customer_profile_picture)}}" alt="Profile" class="profile-avatar-lg">
+                                    <img id="profilePreview" src="{{asset('public/storage/' . $user->customer_profile_picture)}}" alt="Profile" class="profile-avatar-lg">
                                 @else
-                                    <img id="profilePreview" src="{{asset('assets/front/images/d-user-icon.png')}}" alt="Profile" class="profile-avatar-lg">
+                                    <img id="profilePreview" src="{{asset('public/assets/front/images/d-user-icon.png')}}" alt="Profile" class="profile-avatar-lg">
                                 @endif
                                 <div>
                                     <div class="form-field" style="margin-bottom:8px;">
@@ -932,8 +932,8 @@
         </div>
     </div>
 
-<script src="{{asset('assets/front/js/jquery-3.6.3.min.js')}}"></script>
-<script src="{{asset('assets/front/js/bootstrap.min.js')}}"></script>
+<script src="{{asset('public/assets/front/js/jquery-3.6.3.min.js')}}"></script>
+<script src="{{asset('public/assets/front/js/bootstrap.min.js')}}"></script>
 <script>
     // Tab switching
     function switchTab(tabName) {

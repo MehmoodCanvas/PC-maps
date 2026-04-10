@@ -306,7 +306,7 @@ function createCustomMarker(iconClass) {
 
 const mapCenter = map.getCenter();
 const marker = createCustomMarker('fa fa-heart').setLngLat([mapCenter.lng, mapCenter.lat]);
-const compassimage = '/assets/front/images/compass.png';
+const compassimage = '/public/assets/front/images/compass.png';
 const houseMarker = createCustomMarker('fa fa-home').setLngLat([mapCenter.lng, mapCenter.lat]);
 const starMarker = createCustomMarker('fa fa-star').setLngLat([mapCenter.lng, mapCenter.lat]);
 const CompassMaker = new mapboxgl.Marker({
