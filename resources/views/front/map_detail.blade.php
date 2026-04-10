@@ -221,7 +221,7 @@
         <!-- Map Preview -->
         <div class="map-preview-card">
             <div class="map-image-container" id="mapCombinedPreview">
-                <img src="{{url('public/storage/images/maps/' . $map->map_image)}}" id="mainMapImage" alt="Your Map">
+                <img src="{{Storage::url('images/maps/' . $map->map_image)}}" id="mainMapImage" alt="Your Map">
                 <div id="frameEffectOverlay" class="frame-active-overlay"></div>
             </div>
         </div>
@@ -275,7 +275,7 @@
                             $isActive = ($map->map_frame == $frame);
                         @endphp
                         <div class="frame-item {{$isActive ? 'active' : ''}}" data-frame="{{$frame}}">
-                            <div class="frame-thumb" style="background-image: url('{{url('public/frames/' . $frame)}}');"></div>
+                            <div class="frame-thumb" style="background-image: url('{{url('frames/' . $frame)}}');"></div>
                             <div class="frame-name">{{$frameName}}</div>
                         </div>
                         @endforeach
