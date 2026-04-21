@@ -162,7 +162,17 @@ map.on('load', () => {
         if (layer.source === 'composite' && layer['source-layer'] === 'road') {
             console.log('Layer Name:', layer.id, 'ID:', layer.id);
         }
-    })
+
+        // Hide ferry routes
+        if (layer.id.includes('ferry')) {
+            map.setLayoutProperty(layer.id, 'visibility', 'none');
+        }
+
+        // Adjust street visibility from 11.00 to 10.60
+        if (layer.id.includes('road-street') || layer.id.includes('road-minor') || layer.id.includes('road-label')) {
+            map.setLayerZoomRange(layer.id, 10.60, 24);
+        }
+    });
 
 
 
@@ -182,13 +192,13 @@ map.on('load', () => {
 
     function getResponsiveDPI(wInches, hInches) {
         const mapCanvas = map.getCanvas();
-        const padding = 60; 
+        const padding = 60;
         const maxWidth = mapCanvas.offsetWidth - padding;
         const maxHeight = mapCanvas.offsetHeight - padding;
-        
+
         const dpiW = maxWidth / wInches;
         const dpiH = maxHeight / hInches;
-        
+
         return Math.min(dpiW, dpiH, 45);
     }
 
@@ -304,15 +314,15 @@ function createCustomMarker(iconClass) {
 }
 
 
-const mapCenter = map.getCenter();
-const marker = createCustomMarker('fa fa-heart').setLngLat([mapCenter.lng, mapCenter.lat]);
+// Track all icon markers for download/export
+const iconMarkers = [];
+
+// Compass marker (single instance, toggle behavior)
 const compassimage = '/public/assets/front/images/compass.png';
-const houseMarker = createCustomMarker('fa fa-home').setLngLat([mapCenter.lng, mapCenter.lat]);
-const starMarker = createCustomMarker('fa fa-star').setLngLat([mapCenter.lng, mapCenter.lat]);
 const CompassMaker = new mapboxgl.Marker({
     element: document.createElement('img'),
     draggable: true
-}).setLngLat([mapCenter.lng, mapCenter.lat]);
+}).setLngLat([map.getCenter().lng, map.getCenter().lat]);
 CompassMaker.getElement().src = compassimage;
 CompassMaker.getElement().style.width = '120px';
 CompassMaker.getElement().style.height = '120px';
@@ -320,21 +330,258 @@ CompassMaker.getElement().style.objectFit = 'contain';
 CompassMaker.getElement().classList.add('custom-marker');
 CompassMaker.getElement().onerror = function () { this.style.display = 'none'; console.error('Compass image not found at: ' + compassimage); };
 
-document.getElementById('marker-toggle').addEventListener('click', () => toggleMarkerVisibility(marker));
-document.getElementById('house-toggle').addEventListener('click', () => toggleMarkerVisibility(houseMarker));
-document.getElementById('star-toggle').addEventListener('click', () => toggleMarkerVisibility(starMarker));
-document.getElementById('compasss-add').addEventListener('click', () => toggleMarkerVisibility(CompassMaker));
+/**
+ * Add a new icon marker at the current map center each time the button is clicked.
+ * Right-click (contextmenu) on the marker to remove it.
+ */
+function addIconMarker(iconClass) {
+    const center = map.getCenter();
+    const newMarker = createCustomMarker(iconClass).setLngLat([center.lng, center.lat]);
+    newMarker.addTo(map);
+    iconMarkers.push(newMarker);
 
-function toggleMarkerVisibility(marker) {
-    const mapCenter = map.getCenter();
-    marker.setLngLat([mapCenter.lng, mapCenter.lat]);
-    if (marker._isVisible) {
-        marker.remove();
-        marker._isVisible = false;
+    // Right-click to delete this marker
+    const el = newMarker.getElement();
+    el.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        newMarker.remove();
+        const idx = iconMarkers.indexOf(newMarker);
+        if (idx > -1) iconMarkers.splice(idx, 1);
+    });
+}
+
+// Each click adds a NEW marker to the map
+document.getElementById('marker-toggle').addEventListener('click', () => addIconMarker('fa fa-heart'));
+document.getElementById('house-toggle').addEventListener('click', () => addIconMarker('fa fa-home'));
+document.getElementById('star-toggle').addEventListener('click', () => addIconMarker('fa fa-star'));
+
+// Compass stays as a single toggle
+document.getElementById('compasss-add').addEventListener('click', () => {
+    const center = map.getCenter();
+    CompassMaker.setLngLat([center.lng, center.lat]);
+    if (CompassMaker._isVisible) {
+        CompassMaker.remove();
+        CompassMaker._isVisible = false;
     } else {
-        marker.addTo(map);
-        marker._isVisible = true;
+        CompassMaker.addTo(map);
+        CompassMaker._isVisible = true;
     }
+});
+
+// ===== LOGO UPLOAD & PLACEHOLDER =====
+let uploadedLogoFilename = null;
+let logoPlaceholderMarker = null;
+
+// Handle file input change
+document.getElementById('logo-file-input').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    // Validate size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Logo file must be under 5MB.');
+        this.value = '';
+        return;
+    }
+
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById('logo-preview-thumb').src = e.target.result;
+        document.getElementById('logo-preview-name').textContent = file.name;
+        document.getElementById('logo-dropzone').style.display = 'none';
+        document.getElementById('logo-preview-area').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to server
+    const formData = new FormData();
+    formData.append('logo', file);
+
+    fetch('/upload-logo', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        body: formData
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                uploadedLogoFilename = data.filename;
+                addLogoPlaceholder(data.url);
+            } else {
+                alert('Upload failed: ' + (data.message || 'Unknown error'));
+                resetLogoUI();
+            }
+        })
+        .catch(err => {
+            console.error('Logo upload error:', err);
+            alert('Failed to upload logo. Please try again.');
+            resetLogoUI();
+        });
+});
+
+// Remove logo button
+document.getElementById('logo-remove-btn').addEventListener('click', function () {
+    removeLogoPlaceholder();
+    resetLogoUI();
+});
+
+function resetLogoUI() {
+    uploadedLogoFilename = null;
+    document.getElementById('logo-file-input').value = '';
+    document.getElementById('logo-dropzone').style.display = 'flex';
+    document.getElementById('logo-preview-area').style.display = 'none';
+    document.getElementById('logo-preview-thumb').src = '';
+}
+
+function removeLogoPlaceholder() {
+    if (logoPlaceholderMarker) {
+        logoPlaceholderMarker.remove();
+        logoPlaceholderMarker = null;
+    }
+}
+
+function addLogoPlaceholder(logoUrl) {
+    removeLogoPlaceholder();
+
+
+    const el = document.createElement('div');
+    el.className = 'logo-placeholder-marker custom-marker';
+    el.style.width = '140px';
+    el.style.height = '100px';
+    el.style.background = 'rgba(255,255,255,0.85)';
+    el.style.border = '2px dashed rgba(77,148,197,0.8)';
+    el.style.borderRadius = '6px';
+    el.style.padding = '4px';
+    el.style.overflow = 'hidden';
+    el.style.boxSizing = 'border-box';
+    el.style.zIndex = '9999';
+
+    const logoImg = document.createElement('img');
+    logoImg.alt = 'Business Logo';
+    logoImg.style.width = '100%';
+    logoImg.style.height = '100%';
+    logoImg.style.objectFit = 'contain';
+    logoImg.style.display = 'block';
+    logoImg.style.pointerEvents = 'none';
+    logoImg.style.userSelect = 'none';
+    logoImg.draggable = false;
+
+    logoImg.onload = function () {
+        const natW = logoImg.naturalWidth;
+        const natH = logoImg.naturalHeight;
+        if (natW && natH) {
+            const ratio = natW / natH;
+            const containerW = 140;
+            el.style.width = containerW + 'px';
+            el.style.height = Math.round(containerW / ratio) + 'px';
+        }
+    };
+    logoImg.src = logoUrl;
+    el.appendChild(logoImg);
+
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'logo-placeholder-resize';
+    resizeHandle.innerHTML = '⤡';
+    el.appendChild(resizeHandle);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'logo-placeholder-delete';
+    deleteBtn.innerHTML = '×';
+    deleteBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        removeLogoPlaceholder();
+        resetLogoUI();
+    });
+    el.appendChild(deleteBtn);
+
+    el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        el.classList.toggle('selected');
+    });
+
+    document.getElementById('map').addEventListener('click', function () {
+        el.classList.remove('selected');
+    });
+
+    el.addEventListener('dblclick', function (e) { e.stopPropagation(); });
+
+    let isResizing = false, startX, startY, startW, startH, aspectRatio;
+
+    function beginResize(clientX, clientY) {
+        isResizing = true;
+        startX = clientX;
+        startY = clientY;
+        startW = el.offsetWidth;
+        startH = el.offsetHeight;
+        aspectRatio = startW / (startH || 1);
+        document.body.style.cursor = 'se-resize';
+        el.classList.add('selected');
+    }
+
+    function doResize(clientX, clientY) {
+        if (!isResizing) return;
+        const dx = clientX - startX;
+        const newW = Math.max(40, startW + dx);
+        const newH = newW / aspectRatio;
+        el.style.width = newW + 'px';
+        el.style.height = newH + 'px';
+    }
+
+    function endResize() {
+        isResizing = false;
+        document.body.style.cursor = '';
+    }
+
+    resizeHandle.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        beginResize(e.clientX, e.clientY);
+
+        function onMove(ev) { ev.preventDefault(); doResize(ev.clientX, ev.clientY); }
+        function onUp() { endResize(); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+
+    resizeHandle.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var t = e.touches[0];
+        beginResize(t.clientX, t.clientY);
+
+        function onTouchMove(ev) { ev.preventDefault(); var t2 = ev.touches[0]; doResize(t2.clientX, t2.clientY); }
+        function onTouchEnd() { endResize(); document.removeEventListener('touchmove', onTouchMove); document.removeEventListener('touchend', onTouchEnd); }
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+    });
+
+    // Create Mapbox marker at map center
+    const center = map.getCenter();
+    logoPlaceholderMarker = new mapboxgl.Marker({
+        element: el,
+        draggable: true
+    }).setLngLat([center.lng, center.lat]).addTo(map);
+}
+
+/**
+ * Get logo placeholder position data for saving.
+ * Returns null if no logo, otherwise returns a JSON string with lng, lat, width, height.
+ */
+function getLogoPositionData() {
+    if (!logoPlaceholderMarker || !uploadedLogoFilename) return null;
+    const lngLat = logoPlaceholderMarker.getLngLat();
+    const el = logoPlaceholderMarker.getElement();
+    return JSON.stringify({
+        lng: lngLat.lng,
+        lat: lngLat.lat,
+        width: el.offsetWidth,
+        height: el.offsetHeight
+    });
 }
 
 
@@ -550,6 +797,14 @@ document.getElementById('add-title').addEventListener('click', () => {
     }
 });
 
+function changeFont() {
+    var selectedFont = document.getElementById('font-select').value;
+    document.querySelectorAll('.dragp').forEach(p => {
+        p.style.fontFamily = selectedFont;
+    });
+}
+window.changeFont = changeFont;
+
 
 
 $('#downloadLink').click(function () {
@@ -723,7 +978,11 @@ $('#downloadLink').click(function () {
                     text: final_count,
                     compass: compass,
                     addons: addons,
-                    frame_style: frameValue
+                    frame_style: frameValue,
+                    logo_filename: uploadedLogoFilename || null,
+                    logo_position: getLogoPositionData(),
+                    lat: map.getCenter().lat,
+                    lng: map.getCenter().lng
                 })
             })
                 .then(response => response.json())

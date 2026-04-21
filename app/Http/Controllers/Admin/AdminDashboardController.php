@@ -19,7 +19,7 @@ class AdminDashboardController extends Controller
         $recentOrders = DB::table('order')
             ->join('customer', 'order_member_id', 'customer_id')
             ->join('map', 'order_map_id', 'map_id')
-            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height')
+            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height', 'map.map_lat', 'map.map_lng', 'map.map_image')
             ->orderBy('order_id', 'DESC')
             ->limit(10)
             ->get();
@@ -48,7 +48,7 @@ class AdminDashboardController extends Controller
         $orders = DB::table('order')
             ->join('customer', 'order_member_id', 'customer_id')
             ->join('map', 'order_map_id', 'map_id')
-            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height', 'map.map_data', 'map.map_frame')
+            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height', 'map.map_data', 'map.map_frame', 'map.map_lat', 'map.map_lng', 'map.map_image')
             ->orderBy('order_id', 'DESC')
             ->paginate(20);
 

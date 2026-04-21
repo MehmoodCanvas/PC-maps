@@ -428,31 +428,34 @@ button#zoom-out1 {
 .overlay-width,
 .overlay-height {
 	position: absolute;
-	color: black;
+	color: white;
 	font-weight: bold;
-	font-size: 16px;
+	font-size: 14px;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 4;
+	padding: 2px 10px;
+	white-space: nowrap;
+	width: auto;
 }
 
 .overlay-width {
 	top: 50%;
 	left: 0;
-	transform: translateY(-144%) translateX(0%);
-	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 2;
-	color: white;
-	padding: 0px 10px;
-	width: 130px;
+	transform: translateY(-50%) translateX(-100%);
 }
 
 .overlay-height {
-	top: 50% !important;
-	left: 50% !important;
-	transform: rotate(-90deg) translateY(-430%) translateX(-50%);
-	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 2;
-	color: white;
-	padding: 0px 5px;
-	width: 130px;
+	top: 0 !important;
+	bottom: 0;
+	right: 0;
+	left: auto !important;
+	transform: translateX(100%);
+	writing-mode: vertical-lr;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	padding: 10px 4px;
 }
 
 #zoom-level-display {
@@ -1018,4 +1021,214 @@ button#zoom-out1 {
 	to {
 		transform: rotate(360deg);
 	}
+}
+
+/* ===== Logo Upload Section ===== */
+.logo-upload-section {
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-upload-title {
+	font-size: 13px;
+	color: #ccc;
+	text-align: center;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+
+.logo-upload-title i {
+	color: #4d94c5;
+	margin-right: 5px;
+}
+
+.logo-upload-dropzone {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	padding: 16px 12px;
+	border: 2px dashed #444;
+	border-radius: 10px;
+	background: rgba(26, 26, 46, 0.6);
+	color: #aaa;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-align: center;
+}
+
+.logo-upload-dropzone:hover {
+	border-color: #4d94c5;
+	background: rgba(77, 148, 197, 0.08);
+	color: #fff;
+}
+
+.logo-upload-dropzone i {
+	font-size: 24px;
+	color: #4d94c5;
+}
+
+.logo-upload-dropzone span {
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.logo-upload-dropzone small {
+	font-size: 10px;
+	color: #777;
+}
+
+.logo-upload-dropzone.dragging {
+	border-color: #4d94c5;
+	background: rgba(77, 148, 197, 0.15);
+	color: #fff;
+}
+
+/* Logo Preview Card */
+.logo-preview-card {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: #1a1a2e;
+	border: 1px solid #333;
+	border-radius: 10px;
+	padding: 8px 10px;
+}
+
+.logo-preview-card img {
+	width: 44px;
+	height: 44px;
+	object-fit: contain;
+	border-radius: 6px;
+	background: #fff;
+	padding: 3px;
+}
+
+.logo-preview-info {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-width: 0;
+}
+
+.logo-preview-info span {
+	font-size: 12px;
+	color: #ccc;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.logo-preview-info button {
+	background: rgba(239, 68, 68, 0.15);
+	border: none;
+	color: #ff6b6b;
+	width: 30px;
+	height: 30px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.2s;
+	flex-shrink: 0;
+}
+
+.logo-preview-info button:hover {
+	background: rgba(239, 68, 68, 0.35);
+}
+
+/* Logo Placeholder Box on Map */
+.logo-placeholder-marker {
+	position: relative;
+	width: 120px;
+	height: 80px;
+	border: 2px dashed #4d94c5;
+	border-radius: 8px;
+	background: rgba(77, 148, 197, 0.12);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	cursor: grab;
+	user-select: none;
+	transition: border-color 0.2s, background 0.2s;
+}
+
+.logo-placeholder-marker:hover {
+	border-color: #6bb5e0;
+	background: rgba(77, 148, 197, 0.2);
+}
+
+.logo-placeholder-marker.selected {
+	border-color: #fff;
+	background: rgba(77, 148, 197, 0.25);
+}
+
+.logo-placeholder-marker i {
+	font-size: 22px;
+	color: #4d94c5;
+	margin-bottom: 2px;
+}
+
+.logo-placeholder-marker span {
+	font-size: 9px;
+	color: #fff;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+/* Resize handle for logo placeholder */
+.logo-placeholder-resize {
+	position: absolute;
+	right: -4px;
+	bottom: -4px;
+	width: 16px;
+	height: 16px;
+	background: #4d94c5;
+	border-radius: 3px;
+	cursor: se-resize;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	font-size: 10px;
+	color: #fff;
+	line-height: 1;
+	z-index: 10;
+}
+
+.logo-placeholder-marker:hover .logo-placeholder-resize,
+.logo-placeholder-marker.selected .logo-placeholder-resize {
+	display: flex;
+}
+
+/* Delete button for logo placeholder */
+.logo-placeholder-delete {
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	width: 20px;
+	height: 20px;
+	background: #ef4444;
+	border-radius: 50%;
+	border: none;
+	color: #fff;
+	font-size: 11px;
+	cursor: pointer;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+	line-height: 1;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.logo-placeholder-marker:hover .logo-placeholder-delete,
+.logo-placeholder-marker.selected .logo-placeholder-delete {
+	display: flex;
 }

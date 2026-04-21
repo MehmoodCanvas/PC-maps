@@ -598,6 +598,7 @@ body::-webkit-scrollbar-thumb {
     text-align: center;
     cursor: grab;
     outline: none; 
+    z-index: 9999 !important;
 }
 
 .active-marker {

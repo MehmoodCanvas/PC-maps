@@ -65,8 +65,10 @@
                     <table class="table" id="ordersTable">
                         <thead>
                             <tr>
+                                <th>Design</th>
                                 <th>Order ID</th>
                                 <th>Customer</th>
+                                <th>Location</th>
                                 <th>Map Size</th>
                                 <th>Frame</th>
                                 <th>Amount</th>
@@ -82,6 +84,23 @@
                                 <td>
                                     <div>{{$order->customer_name}}</div>
                                     <small style="color: #999;">{{$order->customer_email}}</small>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem;">
+                                        <i class="fas fa-map-marker-alt text-danger"></i> 
+                                        @if($order->map_lat && $order->map_lng)
+                                            <a href="https://www.google.com/maps?q={{$order->map_lat}},{{$order->map_lng}}" target="_blank" title="View on Google Maps">
+                                                {{round($order->map_lat, 4)}}, {{round($order->map_lng, 4)}}
+                                            </a>
+                                        @else
+                                            <span class="text-muted">N/A</span>
+                                        @endif
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: #666; margin-top: 4px; line-height: 1.2;">
+                                        {{$order->order_address_one}}<br>
+                                        @if($order->order_address_two) {{$order->order_address_two}}<br> @endif
+                                        {{$order->order_zip_code}}
+                                    </div>
                                 </td>
                                 <td>{{$order->map_width}}" × {{$order->map_height}}"</td>
                                 <td>
@@ -144,13 +163,14 @@
             columnDefs: [
                 { targets: 0, searchable: true, orderable: true },
                 { targets: 1, searchable: true, orderable: true },
-                { targets: 2, searchable: false, orderable: false },
-                { targets: 3, type: 'num-fmt', searchable: false, orderable: true },
-                { targets: 4, searchable: true, orderable: false },
-                { targets: 5, orderable: false, searchable: false },
-                { targets: 6, type: 'date', searchable: false, orderable: true }
+                { targets: 2, searchable: true, orderable: false },
+                { targets: 3, searchable: false, orderable: false },
+                { targets: 4, type: 'num-fmt', searchable: false, orderable: true },
+                { targets: 5, searchable: true, orderable: false },
+                { targets: 6, orderable: false, searchable: false },
+                { targets: 7, type: 'date', searchable: false, orderable: true }
             ],
-            order: [[6, 'desc']],
+            order: [[7, 'desc']],
             pageLength: 25
         });
     </script>

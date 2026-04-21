@@ -30,6 +30,10 @@ class Opearation extends Controller
             'compass' => 'nullable|boolean',
             'addons' => 'nullable|boolean',
             'frame_style' => 'nullable|string',
+            'logo_filename' => 'nullable|string',
+            'logo_position' => 'nullable|string',
+            'lat' => 'nullable|numeric',
+            'lng' => 'nullable|numeric',
         ]);
 
  
@@ -72,6 +76,22 @@ class Opearation extends Controller
         $filename = Str::uuid() . time() . '.png';
         $map->map_image=$filename;
         $map->map_customer_id = Auth::guard('customer')->user()->customer_id;
+
+        // Save logo info if uploaded
+        if ($request->input('logo_filename')) {
+            $map->map_logo = $request->input('logo_filename');
+        }
+        if ($request->input('logo_position')) {
+            $map->map_logo_position = $request->input('logo_position');
+        }
+
+        if ($request->has('lat')) {
+            $map->map_lat = $request->input('lat');
+        }
+        if ($request->has('lng')) {
+            $map->map_lng = $request->input('lng');
+        }
+
         $map->save();
 
         if (!Storage::disk('public')->exists('images/maps')) {
@@ -98,6 +118,35 @@ class Opearation extends Controller
         }
        
     
+       }
+
+       /**
+        * Upload a business logo file via AJAX.
+        * Returns the stored filename so the front-end can attach it when saving the map.
+        */
+       public function uploadLogo(Request $request)
+       {
+           try {
+               $request->validate([
+                   'logo' => 'required|image|mimes:png,jpg,jpeg,svg,webp|max:5120',
+               ]);
+
+               if (!Storage::disk('public')->exists('images/logos')) {
+                   Storage::disk('public')->makeDirectory('images/logos');
+               }
+
+               $file = $request->file('logo');
+               $filename = Str::uuid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+               Storage::disk('public')->putFileAs('images/logos', $file, $filename);
+
+               return response()->json([
+                   'success' => true,
+                   'filename' => $filename,
+                   'url' => asset('storage/images/logos/' . $filename),
+               ]);
+           } catch (\Exception $e) {
+               return response()->json(['error' => 'Failed to upload logo', 'message' => $e->getMessage()], 500);
+           }
        }
 
        public function updateFrame(Request $request) {

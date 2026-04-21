@@ -332,9 +332,10 @@
                         <thead>
                             <tr>
                                 <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Map Size</th>
-                                <th>Amount</th>
+                                 <th>Customer</th>
+                                 <th>Location</th>
+                                 <th>Map Size</th>
+                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Date</th>
                             </tr>
@@ -343,8 +344,19 @@
                             @foreach($recentOrders as $order)
                             <tr>
                                 <td><strong>{{$order->order_invoice_id}}</strong></td>
-                                <td>{{$order->customer_name}}</td>
-                                <td>{{$order->map_width}}" × {{$order->map_height}}"</td>
+                                 <td>{{$order->customer_name}}</td>
+                                 <td>
+                                     <div style="font-size: 0.8rem;">
+                                         @if($order->map_lat && $order->map_lng)
+                                             <a href="https://www.google.com/maps?q={{$order->map_lat}},{{$order->map_lng}}" target="_blank">
+                                                 <i class="fas fa-map-marker-alt text-danger"></i> {{round($order->map_lat, 3)}}, {{round($order->map_lng, 3)}}
+                                             </a>
+                                         @else
+                                             <span class="text-muted">N/A</span>
+                                         @endif
+                                     </div>
+                                 </td>
+                                 <td>{{$order->map_width}}" × {{$order->map_height}}"</td>
                                 <td>${{number_format($order->order_total_amount, 2)}}</td>
                                 <td>
                                     @if($order->order_status === 'Completed')
@@ -376,11 +388,12 @@
                 { targets: 0, searchable: true, orderable: true },
                 { targets: 1, searchable: true, orderable: true },
                 { targets: 2, searchable: false, orderable: false },
-                { targets: 3, type: 'num-fmt', searchable: false, orderable: true },
-                { targets: 4, searchable: true, orderable: false },
-                { targets: 5, type: 'date', searchable: false, orderable: true }
+                { targets: 3, searchable: false, orderable: false },
+                { targets: 4, type: 'num-fmt', searchable: false, orderable: true },
+                { targets: 5, searchable: true, orderable: false },
+                { targets: 6, type: 'date', searchable: false, orderable: true }
             ],
-            order: [[5, 'desc']],
+            order: [[6, 'desc']],
             pageLength: 10
         });
     </script>
