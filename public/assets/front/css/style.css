@@ -1232,3 +1232,23 @@ button#zoom-out1 {
 .logo-placeholder-marker.selected .logo-placeholder-delete {
 	display: flex;
 }
+
+/* Compass Resizable Container */
+.compass-marker-container {
+	position: relative;
+	border: 2px dashed transparent;
+	transition: border-color 0.2s;
+}
+
+.compass-marker-container:hover {
+	border-color: #4d94c5;
+}
+
+.compass-marker-container.selected {
+	border-color: #fff;
+}
+
+.compass-marker-container:hover .logo-placeholder-resize,
+.compass-marker-container.selected .logo-placeholder-resize {
+	display: flex;
+}

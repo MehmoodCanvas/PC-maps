@@ -319,16 +319,88 @@ const iconMarkers = [];
 
 // Compass marker (single instance, toggle behavior)
 const compassimage = '/public/assets/front/images/compass.png';
+const compassEl = document.createElement('div');
+compassEl.className = 'custom-marker compass-marker-container';
+compassEl.style.width = '120px';
+compassEl.style.height = '120px';
+compassEl.style.cursor = 'grab';
+
+const compassImg = document.createElement('img');
+compassImg.src = compassimage;
+compassImg.style.width = '100%';
+compassImg.style.height = '100%';
+compassImg.style.objectFit = 'contain';
+compassImg.style.pointerEvents = 'none';
+compassImg.onerror = function () { this.style.display = 'none'; console.error('Compass image not found at: ' + compassimage); };
+compassEl.appendChild(compassImg);
+
+// Add resize handle
+const compassResizeHandle = document.createElement('div');
+compassResizeHandle.className = 'logo-placeholder-resize'; // Reusing logo resize handle styles
+compassResizeHandle.innerHTML = '⤡';
+compassEl.appendChild(compassResizeHandle);
+
+// Selection logic
+compassEl.addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.querySelectorAll('.custom-marker').forEach(m => m.classList.remove('selected'));
+    compassEl.classList.add('selected');
+});
+
+document.getElementById('map').addEventListener('click', function () {
+    compassEl.classList.remove('selected');
+});
+
+// Resize logic
+let isCompassResizing = false, cStartX, cStartY, cStartW, cStartH;
+function beginCompassResize(clientX, clientY) {
+    isCompassResizing = true;
+    cStartX = clientX;
+    cStartY = clientY;
+    cStartW = compassEl.offsetWidth;
+    cStartH = compassEl.offsetHeight;
+    document.body.style.cursor = 'se-resize';
+    compassEl.classList.add('selected');
+}
+function doCompassResize(clientX, clientY) {
+    if (!isCompassResizing) return;
+    const dx = clientX - cStartX;
+    const dy = clientY - cStartY;
+    // Maintain square aspect ratio for compass
+    const delta = Math.max(dx, dy);
+    const newSize = Math.max(40, cStartW + delta);
+    compassEl.style.width = newSize + 'px';
+    compassEl.style.height = newSize + 'px';
+}
+function endCompassResize() {
+    isCompassResizing = false;
+    document.body.style.cursor = '';
+}
+
+compassResizeHandle.addEventListener('mousedown', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    beginCompassResize(e.clientX, e.clientY);
+    function onMove(ev) { ev.preventDefault(); doCompassResize(ev.clientX, ev.clientY); }
+    function onUp() { endCompassResize(); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+});
+
+compassResizeHandle.addEventListener('touchstart', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    var t = e.touches[0];
+    beginCompassResize(t.clientX, t.clientY);
+    function onTouchMove(ev) { ev.preventDefault(); var t2 = ev.touches[0]; doCompassResize(t2.clientX, t2.clientY); }
+    function onTouchEnd() { endCompassResize(); document.removeEventListener('touchmove', onTouchMove); document.removeEventListener('touchend', onTouchEnd); }
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd);
+});
+
 const CompassMaker = new mapboxgl.Marker({
-    element: document.createElement('img'),
+    element: compassEl,
     draggable: true
 }).setLngLat([map.getCenter().lng, map.getCenter().lat]);
-CompassMaker.getElement().src = compassimage;
-CompassMaker.getElement().style.width = '120px';
-CompassMaker.getElement().style.height = '120px';
-CompassMaker.getElement().style.objectFit = 'contain';
-CompassMaker.getElement().classList.add('custom-marker');
-CompassMaker.getElement().onerror = function () { this.style.display = 'none'; console.error('Compass image not found at: ' + compassimage); };
+CompassMaker._isVisible = false;
 
 /**
  * Add a new icon marker at the current map center each time the button is clicked.

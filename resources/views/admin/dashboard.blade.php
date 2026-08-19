@@ -331,6 +331,7 @@
                     <table class="table" id="recentOrdersTable">
                         <thead>
                             <tr>
+                                <th>Design</th>
                                 <th>Order ID</th>
                                  <th>Customer</th>
                                  <th>Location</th>
@@ -343,6 +344,19 @@
                         <tbody>
                             @foreach($recentOrders as $order)
                             <tr>
+                                <td>
+                                    @if($order->map_image)
+                                        <img src="{{asset('storage/images/maps/'.$order->map_image)}}" 
+                                             class="img-thumbnail design-preview" 
+                                             style="width: 40px; height: 40px; cursor: pointer; object-fit: cover;" 
+                                             data-bs-toggle="modal" 
+                                             data-bs-target="#imageModal" 
+                                             data-img="{{asset('storage/images/maps/'.$order->map_image)}}"
+                                             alt="Design">
+                                    @else
+                                        <span class="text-muted">No Image</span>
+                                    @endif
+                                </td>
                                 <td><strong>{{$order->order_invoice_id}}</strong></td>
                                  <td>{{$order->customer_name}}</td>
                                  <td>
@@ -379,23 +393,50 @@
         </div>
     </div>
 
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Design Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid rounded" alt="Large Design Preview">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{{asset('assets/front/js/bootstrap.min.js')}}"></script>
     <script src="{{asset('assets/front/js/jquery-3.6.3.min.js')}}"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
     <script>
         new DataTable('#recentOrdersTable', {
             columnDefs: [
-                { targets: 0, searchable: true, orderable: true },
+                { targets: 0, searchable: false, orderable: false },
                 { targets: 1, searchable: true, orderable: true },
-                { targets: 2, searchable: false, orderable: false },
+                { targets: 2, searchable: true, orderable: true },
                 { targets: 3, searchable: false, orderable: false },
-                { targets: 4, type: 'num-fmt', searchable: false, orderable: true },
-                { targets: 5, searchable: true, orderable: false },
-                { targets: 6, type: 'date', searchable: false, orderable: true }
+                { targets: 4, searchable: false, orderable: false },
+                { targets: 5, type: 'num-fmt', searchable: false, orderable: true },
+                { targets: 6, searchable: true, orderable: false },
+                { targets: 7, type: 'date', searchable: false, orderable: true }
             ],
-            order: [[6, 'desc']],
+            order: [[7, 'desc']],
             pageLength: 10
         });
+
+        // Handle image modal
+        const imageModal = document.getElementById('imageModal');
+        if (imageModal) {
+            imageModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const imgSrc = button.getAttribute('data-img');
+                const modalImg = document.getElementById('modalImage');
+                modalImg.src = imgSrc;
+            });
+        }
     </script>
 </body>
 </html>

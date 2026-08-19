@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,32 +10,37 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="{{asset('assets/admin-theme.css')}}" />
     <style>
-       
         .order-status-form {
             display: flex;
             gap: 5px;
         }
+
         .order-status-form select {
             padding: 4px 8px;
             border-radius: 4px;
             border: 1px solid #e2e8f0;
         }
     </style>
-     
+
 </head>
+
 <body>
     <div class="admin-wrapper">
-        <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="logo">
                 <i class="fas fa-shield-alt"></i> Admin
             </div>
             <ul class="nav-menu">
-                <li><a href="{{url('/admin/dashboard')}}" class="{{Request::is('admin/dashboard') ? 'active' : ''}}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                <li><a href="{{url('/admin/customers')}}" class="{{Request::is('admin/customers') ? 'active' : ''}}"><i class="fas fa-users"></i> Customers</a></li>
-                <li><a href="{{url('/admin/orders')}}" class="{{Request::is('admin/orders') ? 'active' : ''}}"><i class="fas fa-shopping-cart"></i> Orders</a></li>
-                <li><a href="{{url('/admin/pricing')}}" class="{{Request::is('admin/pricing') ? 'active' : ''}}"><i class="fas fa-dollar-sign"></i> Pricing</a></li>
-                <li><a href="{{url('/admin/profile')}}" class="{{Request::is('admin/profile') ? 'active' : ''}}"><i class="fas fa-user-circle"></i> Profile</a></li>
+                <li><a href="{{url('/admin/dashboard')}}" class="{{Request::is('admin/dashboard') ? 'active' : ''}}"><i
+                            class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="{{url('/admin/customers')}}" class="{{Request::is('admin/customers') ? 'active' : ''}}"><i
+                            class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{url('/admin/orders')}}" class="{{Request::is('admin/orders') ? 'active' : ''}}"><i
+                            class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="{{url('/admin/pricing')}}" class="{{Request::is('admin/pricing') ? 'active' : ''}}"><i
+                            class="fas fa-dollar-sign"></i> Pricing</a></li>
+                <li><a href="{{url('/admin/profile')}}" class="{{Request::is('admin/profile') ? 'active' : ''}}"><i
+                            class="fas fa-user-circle"></i> Profile</a></li>
                 <li style="border-top: 2px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 20px;">
                     <a href="{{url('/admin/logout')}}"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </li>
@@ -55,10 +61,10 @@
             <!-- Content -->
             <main class="admin-content">
                 @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle"></i> {{ $message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> {{ $message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 @endif
 
                 <div class="content-section">
@@ -79,79 +85,111 @@
                         </thead>
                         <tbody>
                             @forelse($orders as $order)
-                            <tr>
-                                <td><strong>{{$order->order_invoice_id}}</strong></td>
-                                <td>
-                                    <div>{{$order->customer_name}}</div>
-                                    <small style="color: #999;">{{$order->customer_email}}</small>
-                                </td>
-                                <td>
-                                    <div style="font-size: 0.85rem;">
-                                        <i class="fas fa-map-marker-alt text-danger"></i> 
-                                        @if($order->map_lat && $order->map_lng)
-                                            <a href="https://www.google.com/maps?q={{$order->map_lat}},{{$order->map_lng}}" target="_blank" title="View on Google Maps">
-                                                {{round($order->map_lat, 4)}}, {{round($order->map_lng, 4)}}
-                                            </a>
+                                <tr>
+                                    <td>
+                                        @if($order->map_image)
+                                            <img src="{{asset('storage/images/maps/' . $order->map_image)}}"
+                                                class="img-thumbnail design-preview"
+                                                style="width: 50px; height: 50px; cursor: pointer; object-fit: cover;"
+                                                data-bs-toggle="modal" data-bs-target="#imageModal"
+                                                data-img="{{asset('storage/images/maps/' . $order->map_image)}}" alt="Design">
                                         @else
-                                            <span class="text-muted">N/A</span>
+                                            <span class="text-muted">No Image</span>
                                         @endif
-                                    </div>
-                                    <div style="font-size: 0.75rem; color: #666; margin-top: 4px; line-height: 1.2;">
-                                        {{$order->order_address_one}}<br>
-                                        @if($order->order_address_two) {{$order->order_address_two}}<br> @endif
-                                        {{$order->order_zip_code}}
-                                    </div>
-                                </td>
-                                <td>{{$order->map_width}}" × {{$order->map_height}}"</td>
-                                <td>
-                                    @if($order->map_frame && $order->map_frame !== 'none')
-                                        <span class="badge bg-secondary">{{str_replace(' background removed.png', '', $order->map_frame)}}</span>
-                                    @else
-                                        <small style="color: #ccc;">None</small>
-                                    @endif
-                                </td>
-                                <td>${{number_format($order->order_total_amount, 2)}}</td>
-                                <td>
-                                    @if($order->order_status === 'Completed')
-                                    <span class="badge bg-success">{{$order->order_status}}</span>
-                                    @elseif($order->order_status === 'Approved')
-                                    <span class="badge" style="background: #d1ecf1; color: #0c5460;">{{$order->order_status}}</span>
-                                    @elseif($order->order_status === 'Pending')
-                                    <span class="badge bg-warning">{{$order->order_status}}</span>
-                                    @else
-                                    <span class="badge bg-danger">{{$order->order_status}}</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <form method="POST" action="{{url('/admin/orders/'.$order->order_id.'/status')}}" class="status-form">
-                                        @csrf
-                                        <select name="order_status" class="form-control" style="width: 120px; padding: 4px 8px; font-size: 12px;">
-                                            <option value="Pending" {{$order->order_status === 'Pending' ? 'selected' : ''}}>Pending</option>
-                                            <option value="Approved" {{$order->order_status === 'Approved' ? 'selected' : ''}}>Approved</option>
-                                            <option value="Completed" {{$order->order_status === 'Completed' ? 'selected' : ''}}>Completed</option>
-                                            <option value="Cancelled" {{$order->order_status === 'Cancelled' ? 'selected' : ''}}>Cancelled</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                    </form>
-                                </td>
-                                <td>{{\Carbon\Carbon::parse($order->created_at)->format('M d, Y')}}</td>
-                            </tr>
+                                    </td>
+                                    <td><strong>{{$order->order_invoice_id}}</strong></td>
+                                    <td>
+                                        <div>{{$order->customer_name}}</div>
+                                        <small style="color: #999;">{{$order->customer_email}}</small>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 0.85rem;">
+                                            <i class="fas fa-map-marker-alt text-danger"></i>
+                                            @if($order->map_lat && $order->map_lng)
+                                                <a href="https://www.google.com/maps?q={{$order->map_lat}},{{$order->map_lng}}"
+                                                    target="_blank" title="View on Google Maps">
+                                                    {{round($order->map_lat, 4)}}, {{round($order->map_lng, 4)}}
+                                                </a>
+                                            @else
+                                                <span class="text-muted">N/A</span>
+                                            @endif
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: #666; margin-top: 4px; line-height: 1.2;">
+                                            {{$order->order_address_one}}<br>
+                                            @if($order->order_address_two) {{$order->order_address_two}}<br> @endif
+                                            {{$order->order_zip_code}}
+                                        </div>
+                                    </td>
+                                    <td>{{$order->map_width}}" × {{$order->map_height}}"</td>
+                                    <td>
+                                        @if($order->map_frame && $order->map_frame !== 'none')
+                                            <span
+                                                class="badge bg-secondary">{{str_replace(' background removed.png', '', $order->map_frame)}}</span>
+                                        @else
+                                            <small style="color: #ccc;">None</small>
+                                        @endif
+                                    </td>
+                                    <td>${{number_format($order->order_total_amount, 2)}}</td>
+                                    <td>
+                                        @if($order->order_status === 'Completed')
+                                            <span class="badge bg-success">{{$order->order_status}}</span>
+                                        @elseif($order->order_status === 'Approved')
+                                            <span class="badge"
+                                                style="background: #d1ecf1; color: #0c5460;">{{$order->order_status}}</span>
+                                        @elseif($order->order_status === 'Pending')
+                                            <span class="badge bg-warning">{{$order->order_status}}</span>
+                                        @else
+                                            <span class="badge bg-danger">{{$order->order_status}}</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <form method="POST"
+                                            action="{{url('/admin/orders/' . $order->order_id . '/status')}}"
+                                            class="status-form">
+                                            @csrf
+                                            <select name="order_status" class="form-control"
+                                                style="width: 120px; padding: 4px 8px; font-size: 12px;">
+                                                <option value="Pending" {{$order->order_status === 'Pending' ? 'selected' : ''}}>Pending</option>
+                                                <option value="Approved" {{$order->order_status === 'Approved' ? 'selected' : ''}}>Approved</option>
+                                                <option value="Completed" {{$order->order_status === 'Completed' ? 'selected' : ''}}>Completed</option>
+                                                <option value="Cancelled" {{$order->order_status === 'Cancelled' ? 'selected' : ''}}>Cancelled</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </form>
+                                    </td>
+                                    <td>{{\Carbon\Carbon::parse($order->created_at)->format('M d, Y')}}</td>
+                                </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-4">No orders found</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="10" class="text-center py-4">No orders found</td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
 
                     <!-- Pagination -->
                     @if($orders->hasPages())
-                    <div style="margin-top: 20px;">
-                        {{$orders->links()}}
-                    </div>
+                        <div style="margin-top: 20px;">
+                            {{$orders->links()}}
+                        </div>
                     @endif
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Design Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid rounded" alt="Large Design Preview">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -161,18 +199,31 @@
     <script>
         new DataTable('#ordersTable', {
             columnDefs: [
-                { targets: 0, searchable: true, orderable: true },
+                { targets: 0, searchable: false, orderable: false },
                 { targets: 1, searchable: true, orderable: true },
-                { targets: 2, searchable: true, orderable: false },
-                { targets: 3, searchable: false, orderable: false },
-                { targets: 4, type: 'num-fmt', searchable: false, orderable: true },
-                { targets: 5, searchable: true, orderable: false },
-                { targets: 6, orderable: false, searchable: false },
-                { targets: 7, type: 'date', searchable: false, orderable: true }
+                { targets: 2, searchable: true, orderable: true },
+                { targets: 3, searchable: true, orderable: false },
+                { targets: 4, searchable: false, orderable: false },
+                { targets: 5, type: 'num-fmt', searchable: false, orderable: true },
+                { targets: 6, searchable: true, orderable: false },
+                { targets: 7, orderable: false, searchable: false },
+                { targets: 8, type: 'date', searchable: false, orderable: true }
             ],
-            order: [[7, 'desc']],
+            order: [[8, 'desc']],
             pageLength: 25
         });
+
+        // Handle image modal
+        const imageModal = document.getElementById('imageModal');
+        if (imageModal) {
+            imageModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const imgSrc = button.getAttribute('data-img');
+                const modalImg = document.getElementById('modalImage');
+                modalImg.src = imgSrc;
+            });
+        }
     </script>
 </body>
+
 </html>
