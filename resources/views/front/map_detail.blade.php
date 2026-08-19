@@ -50,23 +50,10 @@
         width: 100%;
         height: auto;
         display: block;
-        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
     }
 
-    /* Clean Color Border Frame Overlay */
-    .frame-active-overlay {
-        position: absolute;
-        top: -30px;
-        left: -30px;
-        right: -30px;
-        bottom: -30px;
-        z-index: 10;
-        pointer-events: none;
-        display: none;
-        /* Shown via JS */
-        border: 30px solid #333;
-        /* Color set via JS */
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    .pframe:not(.is-framed)>img {
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
     }
 
     .frame-disclaimer {
@@ -280,10 +267,12 @@
     <div class="detail-grid">
         <!-- Map Preview -->
         <div class="map-preview-card">
-            <div class="map-image-container" id="mapCombinedPreview">
-                <img src="{{asset('storage/images/maps/' . $map->map_image)}}" id="mainMapImage"
-                    alt="Your Map">
-                <div id="frameEffectOverlay" class="frame-active-overlay"></div>
+            <div class="map-image-container">
+                @php $activeSwatch = \App\Support\Frames::swatchUrl($map->map_frame); @endphp
+                <div class="pframe" id="mapCombinedPreview"
+                    @if($activeSwatch) data-frame-swatch="{{$activeSwatch}}" @endif>
+                    <img src="{{asset('storage/images/maps/' . $map->map_image)}}" id="mainMapImage" alt="Your Map">
+                </div>
             </div>
         </div>
 
@@ -334,23 +323,20 @@
                         </div>
 
                         @foreach($frames as $frame)
-                            @php
-                                $frameName = str_replace(' background removed.png', '', $frame);
-                                $isActive = ($map->map_frame == $frame);
-                            @endphp
-                            <div class="frame-item {{$isActive ? 'active' : ''}}" data-frame="{{$frame}}">
-                                <div class="frame-thumb" style="background-image: url('{{url('frames/' . $frame)}}');">
+                            <div class="frame-item {{$map->map_frame == $frame ? 'active' : ''}}" data-frame="{{$frame}}"
+                                data-swatch="{{\App\Support\Frames::swatchUrl($frame)}}">
+                                <div class="frame-thumb"
+                                    style="background-image: url('{{\App\Support\Frames::thumbUrl($frame)}}');">
                                 </div>
-                                <div class="frame-name">{{$frameName}}</div>
+                                <div class="frame-name">{{$frameLabels[$frame] ?? $frame}}</div>
                             </div>
                         @endforeach
                     </div>
 
                     <div class="frame-disclaimer">
                         <i class="fas fa-info-circle"></i>
-                        <strong>Disclaimer:</strong> The frame preview on the map is for color reference only. Your
-                        physical frame will be constructed with the high-quality material shown in the sample thumbnails
-                        above.
+                        <strong>Disclaimer:</strong> The preview is built from photographs of the actual moulding, so
+                        colour and grain may shift slightly between screens and the finished frame.
                     </div>
                 </div>
 
@@ -381,59 +367,31 @@
 </div>
 
 <script src="{{asset('assets/front/js/jquery-3.6.3.min.js')}}"></script>
+<script src="{{asset('assets/front/js/frame-preview.js')}}"></script>
 <script>
     $(document).ready(function () {
         const mapId = "{{$map->map_id}}";
-        const frameOverlay = $('#frameEffectOverlay');
-        const mapImage = $('#mainMapImage');
+        const preview = document.getElementById('mapCombinedPreview');
 
-        // Color mapping for frame types to fill the sides
-        const frameColorMap = {
-            'C22': '#1a0f0a',  // Dark Ebony
-            'E1': '#8b7355',   // Antique Bronze
-            'E17': '#d2b48c',  // Natural Wood
-            'H1': '#bf9b30',   // Ornate Gold
-            'H2': '#111111',   // Black
-            'H9': '#d1d1d1',   // Silver
-            'J12': '#3d2b1f',  // Walnut
-            'none': 'transparent'
-        };
-
-        // Initial frame set
-        applyFrameStyles("{{$map->map_frame}}");
+        // Reflect whatever is already saved on the map.
+        $('#frameCostRow').toggle("{{$map->map_frame}}" !== 'none' && "{{$map->map_frame}}" !== '');
 
         $('.frame-item').click(function () {
             const frameVal = $(this).data('frame');
+            const swatch = $(this).data('swatch');
 
-            // UI Update
             $('.frame-item').removeClass('active');
             $(this).addClass('active');
 
-            // Visual Preview
-            applyFrameStyles(frameVal);
-
-            // DB Update
+            applyFrameStyles(frameVal, swatch);
             updateFrameInDB(frameVal);
         });
 
-        function applyFrameStyles(frame) {
-            if (frame === 'none') {
-                frameOverlay.hide();
-                $('#frameCostRow').hide();
-            } else {
-                // Get the frame prefix for color (e.g. C22)
-                const frameKey = frame.split(' ')[0];
-                const frameColor = frameColorMap[frameKey] || '#333';
+        function applyFrameStyles(frame, swatch) {
+            const framed = frame !== 'none' && !!swatch;
 
-                // Show overlay and apply solid border color (hollow center)
-                frameOverlay.show().css({
-                    'display': 'block',
-                    'border-color': frameColor,
-                    'background-color': 'transparent'
-                });
-
-                $('#frameCostRow').show();
-            }
+            window.PictureFrame.apply(preview, framed ? swatch : null);
+            $('#frameCostRow').toggle(framed);
         }
 
         function updateFrameInDB(frame) {

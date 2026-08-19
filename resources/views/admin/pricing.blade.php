@@ -24,6 +24,48 @@
             font-weight: 600;
             margin-bottom: 20px;
         }
+        .frame-row {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            grid-template-areas: "swatch fields" "swatch file";
+            gap: 6px 14px;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .frame-row-swatch {
+            grid-area: swatch;
+            align-self: stretch;
+            min-height: 56px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: #f1f5f9;
+            background-size: cover;
+            background-position: center;
+        }
+        .frame-row-fields {
+            grid-area: fields;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 14px;
+        }
+        .frame-row-fields .form-group {
+            margin: 0;
+        }
+        .frame-row-file {
+            grid-area: file;
+            color: #94a3b8;
+            font-size: 11px;
+            word-break: break-all;
+        }
+        @media (max-width: 640px) {
+            .frame-row-fields {
+                grid-template-columns: 1fr;
+            }
+        }
         .pricing-info {
             background: #eff6ff;
             border-left: 4px solid #3b82f6;
@@ -132,14 +174,27 @@
                             </div>
 
                             <hr style="border-color: #e5e7eb; margin: 20px 0;">
-                            <h4 style="font-size: 14px; color: #374151; margin-bottom: 15px;"><i class="fas fa-palette"></i> Frame Style Multipliers (From public/frames)</h4>
-                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">These multipliers are applied to the base cost per inch. For example, 1.0 = base price, 1.5 = 50% more, 2.0 = double.</p>
+                            <h4 style="font-size: 14px; color: #374151; margin-bottom: 15px;"><i class="fas fa-palette"></i> Frame Styles (From public/frames)</h4>
+                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">
+                                <strong>Display Name</strong> is what customers see in the frame picker &mdash; leave it blank to fall back to Op1, Op2, Op3&hellip;<br>
+                                <strong>Multiplier</strong> is applied to the base cost per inch. For example, 1.0 = base price, 1.5 = 50% more, 2.0 = double.
+                            </p>
 
                             @foreach($frameMultipliers as $frameFile => $multiplier)
-                            <div class="form-group">
-                                <label for="frame_{{str_replace(' ', '_', $frameFile)}}">{{str_replace(' background removed.png', '', $frameFile)}} Multiplier</label>
-                                <input type="number" id="frame_{{str_replace(' ', '_', $frameFile)}}" name="frame_multipliers[{{$frameFile}}]" step="0.01" min="0" value="{{ $multiplier }}" required>
-                                <small>Multiplier for frame file: {{ $frameFile }}</small>
+                            @php $fieldId = str_replace(' ', '_', $frameFile); @endphp
+                            <div class="frame-row">
+                                <div class="frame-row-swatch" style="background-image: url('{{\App\Support\Frames::thumbUrl($frameFile)}}');"></div>
+                                <div class="frame-row-fields">
+                                    <div class="form-group">
+                                        <label for="label_{{$fieldId}}">Display Name</label>
+                                        <input type="text" id="label_{{$fieldId}}" name="frame_labels[{{$frameFile}}]" maxlength="40" value="{{ $frameLabels[$frameFile] ?? '' }}" placeholder="Op{{ $loop->iteration }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="frame_{{$fieldId}}">Multiplier</label>
+                                        <input type="number" id="frame_{{$fieldId}}" name="frame_multipliers[{{$frameFile}}]" step="0.01" min="0" value="{{ $multiplier }}" required>
+                                    </div>
+                                </div>
+                                <small class="frame-row-file">{{ $frameFile }}</small>
                             </div>
                             @endforeach
 

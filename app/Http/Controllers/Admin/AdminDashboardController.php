@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Setting;
+use App\Support\Frames;
 
 class AdminDashboardController extends Controller
 {
@@ -48,11 +49,13 @@ class AdminDashboardController extends Controller
         $orders = DB::table('order')
             ->join('customer', 'order_member_id', 'customer_id')
             ->join('map', 'order_map_id', 'map_id')
-            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height', 'map.map_data', 'map.map_frame', 'map.map_lat', 'map.map_lng', 'map.map_image')
+            ->select('order.*', 'customer.customer_name', 'customer.customer_email', 'map.map_width', 'map.map_height', 'map.map_frame', 'map.map_lat', 'map.map_lng', 'map.map_image')
             ->orderBy('order_id', 'DESC')
             ->paginate(20);
 
-        return view('admin.orders', compact('orders'));
+        $frameLabels = Frames::labels();
+
+        return view('admin.orders', compact('orders', 'frameLabels'));
     }
 
     public function updateOrderStatus(Request $request, $orderId)
@@ -79,17 +82,14 @@ class AdminDashboardController extends Controller
             'frame_cost_per_inch' => Setting::get('frame_cost_per_inch', 2.50),
         ];
 
-        $frames = scandir(public_path('frames'));
-        $frames = array_filter($frames, function($file) {
-            return !in_array($file, ['.', '..']) && !is_dir(public_path('frames/' . $file));
-        });
-
         $frameMultipliers = [];
-        foreach($frames as $frame) {
+        foreach(Frames::files() as $frame) {
             $frameMultipliers[$frame] = Setting::get('frame_multiplier_' . str_replace(' ', '_', $frame), 1.2);
         }
 
-        return view('admin.pricing', compact('pricingSettings', 'frameMultipliers'));
+        $frameLabels = Frames::labels();
+
+        return view('admin.pricing', compact('pricingSettings', 'frameMultipliers', 'frameLabels'));
     }
 
     public function updatePricing(Request $request)
@@ -106,9 +106,21 @@ class AdminDashboardController extends Controller
             Setting::set($key, $value, 'number');
         }
 
+        $knownFrames = Frames::files();
+
         if ($request->has('frame_multipliers')) {
             foreach ($request->frame_multipliers as $frameFile => $multiplier) {
-                Setting::set('frame_multiplier_' . str_replace(' ', '_', $frameFile), $multiplier, 'number');
+                if (in_array($frameFile, $knownFrames, true)) {
+                    Setting::set('frame_multiplier_' . str_replace(' ', '_', $frameFile), $multiplier, 'number');
+                }
+            }
+        }
+
+        if ($request->has('frame_labels')) {
+            foreach ($request->frame_labels as $frameFile => $label) {
+                if (in_array($frameFile, $knownFrames, true)) {
+                    Frames::setLabel($frameFile, $label);
+                }
             }
         }
 

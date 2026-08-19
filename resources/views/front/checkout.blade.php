@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="stylesheet" href="{{asset('assets/front/css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('assets/front/css/all.css')}}">
+        <link rel="stylesheet" href="{{asset('assets/front/css/frame-preview.css')}}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
         <link
             rel="stylesheet"
@@ -72,7 +73,11 @@
             .map-image {
                 flex: 0 0 200px;
                 border-radius: 8px;
-                overflow: hidden;
+                /* Visible so the picture frame, which sits outside the print, is not clipped. */
+                overflow: visible;
+            }
+            .map-image .pframe:not(.is-framed) > img {
+                border-radius: 8px;
                 box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             }
             .map-image img {
@@ -267,7 +272,10 @@
                         
                         <div class="map-preview">
                             <div class="map-image">
-                                <img src="{{$maps->map_data}}" alt="Map Preview">
+                                @php $checkoutSwatch = \App\Support\Frames::swatchUrl($maps->map_frame); @endphp
+                                <div class="pframe" @if($checkoutSwatch) data-frame-swatch="{{$checkoutSwatch}}" @endif>
+                                    <img src="{{$maps->map_data}}" alt="Map Preview">
+                                </div>
                             </div>
                             <div class="map-details">
                                 <div class="detail-row">
@@ -289,11 +297,7 @@
                                 <div class="detail-row">
                                     <span class="detail-label">Frame:</span>
                                     <span class="detail-value">
-                                        @if($maps->map_frame && $maps->map_frame !== 'none')
-                                            {{str_replace(' background removed.png', '', $maps->map_frame)}}
-                                        @else
-                                            None
-                                        @endif
+                                        {{$frameLabel}}
                                     </span>
                                 </div>
                                 <div class="price-total">
@@ -409,6 +413,7 @@
 
         <script src="{{asset('assets/front/js/bootstrap.min.js')}}"></script>
         <script src="{{asset('assets/front/js/jquery-3.6.3.min.js')}}"></script>
+        <script src="{{asset('assets/front/js/frame-preview.js')}}"></script>
         <script>
     paypal
     .Buttons({

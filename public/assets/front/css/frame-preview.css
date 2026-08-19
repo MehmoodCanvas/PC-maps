@@ -1,0 +1,111 @@
+/*
+ * Picture-frame preview.
+ *
+ * The frame art in public/frames is a photographed length of moulding, not a
+ * hollow frame, so the frame is assembled here from four strips: the top and
+ * bottom use the swatch as-is, the sides reuse it rotated 90deg so the profile
+ * and grain run the right way. Each strip is clipped to a trapezoid, which
+ * produces the 45deg mitres where they meet.
+ *
+ * --pf-t (thickness) and --pf-h (outer height, needed to length the rotated
+ * side rails) are set by frame-preview.js.
+ */
+
+.pframe {
+	--pf-t: 24px;
+	--pf-h: 0px;
+	position: relative;
+	display: block;
+	line-height: 0;
+}
+
+.pframe.is-framed {
+	margin: var(--pf-t);
+}
+
+.pframe > img,
+.pframe > .pframe-art {
+	display: block;
+	width: 100%;
+	height: auto;
+	position: relative;
+	z-index: 1;
+}
+
+/* Outer drop shadow, drawn on the framed footprint rather than the artwork. */
+.pframe.is-framed::before {
+	content: "";
+	position: absolute;
+	top: calc(-1 * var(--pf-t));
+	left: calc(-1 * var(--pf-t));
+	right: calc(-1 * var(--pf-t));
+	bottom: calc(-1 * var(--pf-t));
+	box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
+	z-index: 0;
+}
+
+/* Rebate shadow where the print sits down inside the frame. */
+.pframe-mount {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	pointer-events: none;
+	display: none;
+	box-shadow:
+		inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+		inset 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pframe.is-framed .pframe-mount {
+	display: block;
+}
+
+.pframe-edge {
+	position: absolute;
+	z-index: 3;
+	display: none;
+	pointer-events: none;
+	background-repeat: repeat-x;
+	background-position: center;
+	/* Swatch height maps to frame thickness; it tiles along the length. */
+	background-size: auto 100%;
+	clip-path: polygon(0 0, 100% 0, calc(100% - var(--pf-t)) 100%, var(--pf-t) 100%);
+}
+
+.pframe.is-framed .pframe-edge {
+	display: block;
+}
+
+.pframe-top {
+	top: calc(-1 * var(--pf-t));
+	left: calc(-1 * var(--pf-t));
+	width: calc(100% + 2 * var(--pf-t));
+	height: var(--pf-t);
+}
+
+.pframe-bottom {
+	bottom: calc(-1 * var(--pf-t));
+	left: calc(-1 * var(--pf-t));
+	width: calc(100% + 2 * var(--pf-t));
+	height: var(--pf-t);
+	/* Mirrors the profile so the inner lip faces the print top and bottom. */
+	transform: scaleY(-1);
+}
+
+.pframe-left {
+	top: calc(-1 * var(--pf-t));
+	left: calc(-1 * var(--pf-t));
+	width: var(--pf-h);
+	height: var(--pf-t);
+	transform-origin: 0 0;
+	transform: rotate(90deg) translateY(-100%);
+}
+
+.pframe-right {
+	top: calc(-1 * var(--pf-t));
+	right: calc(-1 * var(--pf-t));
+	width: var(--pf-h);
+	height: var(--pf-t);
+	transform-origin: 100% 0;
+	transform: rotate(-90deg) translateY(-100%);
+}

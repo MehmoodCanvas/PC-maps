@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Support\Frames;
 
 class Main extends Controller
 {
@@ -22,12 +23,10 @@ class Main extends Controller
       if(!$map) {
           return redirect(url('/dashboard'));
       }
-      $frames = scandir(public_path('frames'));
-      $frames = array_filter($frames, function($file) {
-          return !in_array($file, ['.', '..']);
-      });
+      $frames = Frames::files();
+      $frameLabels = Frames::labels();
 
-      return view('front.map_detail', compact('map', 'frames'));
+      return view('front.map_detail', compact('map', 'frames', 'frameLabels'));
    }
    public function signup(){
       If(Auth::guard('customer')->check()){
@@ -49,8 +48,9 @@ class Main extends Controller
          return redirect(url('/dashboard'));
       }
       $maps = DB::table('map')->where('map_id',$_GET['id'])->orderBy('map_id',"DESC")->first();
+      $frameLabel = Frames::label($maps->map_frame ?? 'none');
 
-      return view('front.checkout',compact('maps'));
+      return view('front.checkout',compact('maps','frameLabel'));
       
    }
    public function dashboard(){
