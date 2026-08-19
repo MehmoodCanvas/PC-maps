@@ -124,7 +124,7 @@
                                     <td>
                                         @if($order->map_frame && $order->map_frame !== 'none')
                                             <span
-                                                class="badge bg-secondary">{{$frameLabels[$order->map_frame] ?? $order->map_frame}}</span>
+                                                class="badge bg-secondary">{{\App\Support\Frames::label($order->map_frame)}}</span>
                                         @else
                                             <small style="color: #ccc;">None</small>
                                         @endif

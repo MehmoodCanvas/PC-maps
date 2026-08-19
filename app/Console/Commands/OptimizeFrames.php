@@ -22,6 +22,9 @@ class OptimizeFrames extends Command
     const WEB_MAX = 1400;
     const THUMB_MAX = 240;
 
+    // Fraction trimmed from each edge of the source photograph.
+    const EDGE_CROP = 0.02;
+
     public function handle()
     {
         if (!function_exists('imagecreatefromstring')) {
@@ -115,8 +118,14 @@ class OptimizeFrames extends Command
 
     private function resizeTo($source, $destination, $max, $quality)
     {
-        $width = imagesx($source);
-        $height = imagesy($source);
+        // The swatches are photographs, so a sliver of the surface behind the
+        // moulding survives at each edge. Left in, it draws a pale seam along
+        // the outside of every rail and mitre, so trim it before scaling.
+        $inset = self::EDGE_CROP;
+        $srcX = (int) round(imagesx($source) * $inset);
+        $srcY = (int) round(imagesy($source) * $inset);
+        $width = imagesx($source) - 2 * $srcX;
+        $height = imagesy($source) - 2 * $srcY;
         $scale = min(1, $max / max($width, $height));
 
         $newWidth = max(1, (int) round($width * $scale));
@@ -124,7 +133,7 @@ class OptimizeFrames extends Command
 
         $canvas = imagecreatetruecolor($newWidth, $newHeight);
         imagefilledrectangle($canvas, 0, 0, $newWidth, $newHeight, imagecolorallocate($canvas, 255, 255, 255));
-        imagecopyresampled($canvas, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+        imagecopyresampled($canvas, $source, 0, 0, $srcX, $srcY, $newWidth, $newHeight, $width, $height);
         imagejpeg($canvas, $destination, $quality);
         imagedestroy($canvas);
     }

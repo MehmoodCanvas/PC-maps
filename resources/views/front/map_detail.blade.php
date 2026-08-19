@@ -268,7 +268,7 @@
         <!-- Map Preview -->
         <div class="map-preview-card">
             <div class="map-image-container">
-                @php $activeSwatch = \App\Support\Frames::swatchUrl($map->map_frame); @endphp
+                @php $activeFrame = \App\Support\Frames::resolve($map->map_frame); $activeSwatch = \App\Support\Frames::swatchUrl($map->map_frame); @endphp
                 <div class="pframe" id="mapCombinedPreview"
                     @if($activeSwatch) data-frame-swatch="{{$activeSwatch}}" @endif>
                     <img src="{{asset('storage/images/maps/' . $map->map_image)}}" id="mainMapImage" alt="Your Map">
@@ -296,7 +296,7 @@
                             <span>${{number_format($map->map_addon_cost, 2)}}</span>
                         </div>
                     @endif
-                    <div id="frameCostRow" style="{{$map->map_frame == 'none' ? 'display:none' : ''}}">
+                    <div id="frameCostRow" style="{{$activeFrame === null ? 'display:none' : ''}}">
                         <div class="detail-item">
                             <span>Frame Customization</span>
                             <span id="displayFrameCost">$0.00</span>
@@ -313,7 +313,7 @@
                     <h3 class="section-title" style="font-size: 1rem;"><i class="fas fa-border-all"></i> Selection of
                         Frame</h3>
                     <div class="frame-grid">
-                        <div class="frame-item {{($map->map_frame == 'none' || empty($map->map_frame)) ? 'active' : ''}}"
+                        <div class="frame-item {{$activeFrame === null ? 'active' : ''}}"
                             data-frame="none">
                             <div class="frame-thumb"
                                 style="display: flex; align-items: center; justify-content: center; background: #fafafa;">
@@ -323,7 +323,7 @@
                         </div>
 
                         @foreach($frames as $frame)
-                            <div class="frame-item {{$map->map_frame == $frame ? 'active' : ''}}" data-frame="{{$frame}}"
+                            <div class="frame-item {{$activeFrame == $frame ? 'active' : ''}}" data-frame="{{$frame}}"
                                 data-swatch="{{\App\Support\Frames::swatchUrl($frame)}}">
                                 <div class="frame-thumb"
                                     style="background-image: url('{{\App\Support\Frames::thumbUrl($frame)}}');">
@@ -374,7 +374,7 @@
         const preview = document.getElementById('mapCombinedPreview');
 
         // Reflect whatever is already saved on the map.
-        $('#frameCostRow').toggle("{{$map->map_frame}}" !== 'none' && "{{$map->map_frame}}" !== '');
+        $("#frameCostRow").toggle({{ $activeFrame === null ? "false" : "true" }});
 
         $('.frame-item').click(function () {
             const frameVal = $(this).data('frame');

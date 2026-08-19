@@ -19,6 +19,7 @@ class Frames
 
     private static $files;
     private static $labels;
+    private static $codes;
 
     /**
      * Settings key holding the display name for a frame file.
@@ -34,6 +35,17 @@ class Frames
     public static function slug($file)
     {
         return preg_replace('/[^A-Za-z0-9]+/', '_', pathinfo($file, PATHINFO_FILENAME));
+    }
+
+    /**
+     * Supplier stock code for a frame file: "C22SVG (2).svg" and the older
+     * "C22 background removed.png" both yield "C22".
+     */
+    public static function code($file)
+    {
+        $stem = pathinfo((string) $file, PATHINFO_FILENAME);
+
+        return preg_match('/^([A-Za-z]+\d+)/', $stem, $matches) ? strtoupper($matches[1]) : null;
     }
 
     /**
@@ -63,6 +75,39 @@ class Frames
     }
 
     /**
+     * Map a stored map_frame value onto a frame file that still exists.
+     *
+     * Frame art has been re-supplied in different formats over time, so rows
+     * saved against an older filename are matched back by stock code.
+     */
+    public static function resolve($stored)
+    {
+        if (empty($stored) || $stored === 'none') {
+            return null;
+        }
+
+        $files = self::files();
+
+        if (in_array($stored, $files, true)) {
+            return $stored;
+        }
+
+        if (self::$codes === null) {
+            self::$codes = [];
+            foreach ($files as $file) {
+                $code = self::code($file);
+                if ($code !== null && !isset(self::$codes[$code])) {
+                    self::$codes[$code] = $file;
+                }
+            }
+        }
+
+        $code = self::code($stored);
+
+        return $code !== null && isset(self::$codes[$code]) ? self::$codes[$code] : null;
+    }
+
+    /**
      * Map of frame file => display name, in file order.
      */
     public static function labels()
@@ -87,15 +132,17 @@ class Frames
     }
 
     /**
-     * Display name for a single frame file.
+     * Display name for a single stored frame value.
      */
-    public static function label($file)
+    public static function label($stored)
     {
-        if (empty($file) || $file === 'none') {
+        if (empty($stored) || $stored === 'none') {
             return 'No Frame';
         }
 
-        return self::labels()[$file] ?? $file;
+        $file = self::resolve($stored);
+
+        return $file === null ? $stored : self::labels()[$file];
     }
 
     /**
@@ -112,22 +159,24 @@ class Frames
      * Full-quality swatch used to build the frame around a map preview.
      * Falls back to the original art when `frames:optimize` has not been run.
      */
-    public static function swatchUrl($file)
+    public static function swatchUrl($stored)
     {
-        return self::derivativeUrl($file, 'web');
+        return self::derivativeUrl($stored, 'web');
     }
 
     /**
      * Small swatch used for picker tiles and admin listings.
      */
-    public static function thumbUrl($file)
+    public static function thumbUrl($stored)
     {
-        return self::derivativeUrl($file, 'thumbs');
+        return self::derivativeUrl($stored, 'thumbs');
     }
 
-    private static function derivativeUrl($file, $variant)
+    private static function derivativeUrl($stored, $variant)
     {
-        if (empty($file) || $file === 'none' || !in_array($file, self::files(), true)) {
+        $file = self::resolve($stored);
+
+        if ($file === null) {
             return null;
         }
 

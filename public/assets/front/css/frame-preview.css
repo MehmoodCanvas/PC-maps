@@ -109,3 +109,13 @@
 	transform-origin: 100% 0;
 	transform: rotate(-90deg) translateY(-100%);
 }
+
+/*
+ * The side rails are rotated, which maps the clip trapezoid's wide edge to the
+ * rail's inner side. Mirror it so the wide edge faces outward like the top and
+ * bottom, and the mitres line up corner to corner.
+ */
+.pframe-left,
+.pframe-right {
+	clip-path: polygon(var(--pf-t) 0, calc(100% - var(--pf-t)) 0, 100% 100%, 0 100%);
+}

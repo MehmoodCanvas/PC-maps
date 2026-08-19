@@ -69,9 +69,20 @@
 		var thickness = Math.round(Math.min(width, height) * THICKNESS_RATIO);
 		thickness = Math.max(MIN_THICKNESS, Math.min(MAX_THICKNESS, thickness));
 
-		root.style.setProperty('--pf-t', thickness + 'px');
+		// Setting these changes the margin, which resizes the element and would
+		// re-enter through the ResizeObserver -- only write on an actual change.
+		if (root._pfT !== thickness) {
+			root._pfT = thickness;
+			root.style.setProperty("--pf-t", thickness + "px");
+		}
+
 		// Side rails are rotated, so their length is the frame's outer height.
-		root.style.setProperty('--pf-h', (height + 2 * thickness) + 'px');
+		var outerHeight = height + 2 * thickness;
+
+		if (root._pfH !== outerHeight) {
+			root._pfH = outerHeight;
+			root.style.setProperty("--pf-h", outerHeight + "px");
+		}
 	}
 
 	function apply(root, swatchUrl) {
