@@ -211,7 +211,8 @@ map.on('load', () => {
 
     function getResponsiveDPI(wInches, hInches) {
         const mapCanvas = map.getCanvas();
-        const padding = 60;
+        // Leaves room for the dimension read-outs pinned to the map's edges.
+        const padding = 100;
         const maxWidth = mapCanvas.offsetWidth - padding;
         const maxHeight = mapCanvas.offsetHeight - padding;
 
