@@ -1,4 +1,7 @@
 var gcd;
+
+// Map titles are always set in Copperplate; the font picker was removed.
+var TITLE_FONT = 'CopperplateDefault';
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2VpdGhlcmljcGFyc29uczc3IiwiYSI6ImNsZ2syeG96NzA5MWwzam00aW05ejkwaHIifQ.t6aEapdsBtJZwzk5Xxw4Dg';
 const map = new mapboxgl.Map({
     container: 'map',
@@ -158,19 +161,35 @@ map.on('load', () => {
     map.moveLayer('roads', 'road-label-simple');
     map.setLayoutProperty('road-label-simple', 'visibility', 'none');
 
-    map.getStyle().layers.forEach(function (layer) {
-        if (layer.source === 'composite' && layer['source-layer'] === 'road') {
-            console.log('Layer Name:', layer.id, 'ID:', layer.id);
+    // Detail the style holds back until zoom 11 should appear from 10.60 instead.
+    var DETAIL_FROM = 10.60;
+
+    // Only ever lowers a layer's minzoom. Assigning the floor unconditionally
+    // would hide layers that already draw below it.
+    function revealFrom(layer, floor) {
+        var minzoom = typeof layer.minzoom === 'number' ? layer.minzoom : 0;
+
+        if (minzoom <= floor) {
+            return;
         }
 
+        map.setLayerZoomRange(layer.id, floor, typeof layer.maxzoom === 'number' ? layer.maxzoom : 24);
+    }
+
+    map.getStyle().layers.forEach(function (layer) {
         // Hide ferry routes
         if (layer.id.includes('ferry')) {
             map.setLayoutProperty(layer.id, 'visibility', 'none');
+            return;
         }
 
-        // Adjust street visibility from 11.00 to 10.60
-        if (layer.id.includes('road-street') || layer.id.includes('road-minor') || layer.id.includes('road-label')) {
-            map.setLayerZoomRange(layer.id, 10.60, 24);
+        var isRoadDetail = layer.id.includes('road-street')
+            || layer.id.includes('road-minor')
+            || layer.id.includes('road-label');
+
+        // Anything gated at roughly zoom 11, plus the street layers by name.
+        if (isRoadDetail || (typeof layer.minzoom === 'number' && layer.minzoom <= 11)) {
+            revealFrom(layer, DETAIL_FROM);
         }
     });
 
@@ -242,9 +261,14 @@ map.on('load', () => {
         makeWindow();
     });
 
-    document.getElementById('dpi-slider').addEventListener('input', () => {
-        makeWindow();
-    });
+    // Optional control; absent from the current sidebar markup.
+    var dpiSlider = document.getElementById('dpi-slider');
+
+    if (dpiSlider) {
+        dpiSlider.addEventListener('input', () => {
+            makeWindow();
+        });
+    }
 });
 
 // map.addControl(new MapboxExportControl({
@@ -368,9 +392,7 @@ function doCompassResize(clientX, clientY) {
     const dy = clientY - cStartY;
     // Maintain square aspect ratio for compass
     const delta = Math.max(dx, dy);
-    const newSize = Math.max(40, cStartW + delta);
-    compassEl.style.width = newSize + 'px';
-    compassEl.style.height = newSize + 'px';
+    setCompassSize(cStartW + delta);
 }
 function endCompassResize() {
     isCompassResizing = false;
@@ -427,6 +449,33 @@ function addIconMarker(iconClass) {
 document.getElementById('marker-toggle').addEventListener('click', () => addIconMarker('fa fa-heart'));
 document.getElementById('house-toggle').addEventListener('click', () => addIconMarker('fa fa-home'));
 document.getElementById('star-toggle').addEventListener('click', () => addIconMarker('fa fa-star'));
+
+// Keep the slider, the drag handle and the marker element in step.
+function setCompassSize(size) {
+    var clamped = Math.max(40, Math.min(400, Math.round(size)));
+
+    compassEl.style.width = clamped + 'px';
+    compassEl.style.height = clamped + 'px';
+
+    var slider = document.getElementById('compass-size');
+    var readout = document.getElementById('compass-size-value');
+
+    if (slider && Number(slider.value) !== clamped) {
+        slider.value = clamped;
+    }
+
+    if (readout) {
+        readout.textContent = clamped + 'px';
+    }
+}
+
+var compassSizeInput = document.getElementById('compass-size');
+
+if (compassSizeInput) {
+    compassSizeInput.addEventListener('input', function () {
+        setCompassSize(Number(this.value));
+    });
+}
 
 // Compass stays as a single toggle
 document.getElementById('compasss-add').addEventListener('click', () => {
@@ -663,7 +712,7 @@ function createCustomMarker1(iconClass, title, font) {
 
     customMarkerElement.style.color = 'white';
     customMarkerElement.style.height = 'auto';
-    var selectedFont = document.getElementById('font-select').value;
+    var selectedFont = TITLE_FONT;
     var fontSize = document.getElementById('font-size').value;
 
     let font1 = font;
@@ -870,9 +919,8 @@ document.getElementById('add-title').addEventListener('click', () => {
 });
 
 function changeFont() {
-    var selectedFont = document.getElementById('font-select').value;
     document.querySelectorAll('.dragp').forEach(p => {
-        p.style.fontFamily = selectedFont;
+        p.style.fontFamily = TITLE_FONT;
     });
 }
 window.changeFont = changeFont;

@@ -133,15 +133,16 @@
 
     .frame-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        /* Fits 4 across in the sidebar, degrading gracefully when narrower. */
+        grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+        gap: 10px;
         margin-top: 15px;
     }
 
     .frame-item {
         border: 2px solid #eee;
         border-radius: 8px;
-        padding: 8px;
+        padding: 6px;
         cursor: pointer;
         transition: all 0.2s ease;
         text-align: center;
@@ -160,7 +161,7 @@
 
     .frame-thumb {
         width: 100%;
-        height: 60px;
+        height: 46px;
         background-size: cover;
         background-position: center;
         border-radius: 4px;
@@ -170,7 +171,7 @@
     }
 
     .frame-name {
-        font-size: 0.8rem;
+        font-size: 0.72rem;
         font-weight: 600;
         color: #444;
     }

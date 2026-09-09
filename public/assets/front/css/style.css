@@ -430,32 +430,33 @@ button#zoom-out1 {
 	position: absolute;
 	color: white;
 	font-weight: bold;
-	font-size: 14px;
-	background-color: rgba(0, 0, 0, 0.5);
+	font-size: 13px;
+	background-color: rgba(0, 0, 0, 0.55);
+	border-radius: 4px;
 	z-index: 4;
-	padding: 2px 10px;
+	padding: 3px 10px;
 	white-space: nowrap;
 	width: auto;
+	/* Read-outs only -- must never swallow a drag on the map. */
+	pointer-events: none;
 }
 
+/*
+ * Pinned to the outer edges of the map viewport rather than to the print box,
+ * so they stay well clear of the design however large it is drawn.
+ */
 .overlay-width {
-	top: 50%;
-	left: 0;
-	transform: translateY(-50%) translateX(-100%);
+	left: 50%;
+	bottom: 14px;
+	transform: translateX(-50%);
 }
 
 .overlay-height {
-	top: 0 !important;
-	bottom: 0;
-	right: 0;
-	left: auto !important;
-	transform: translateX(100%);
-	writing-mode: vertical-lr;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 100%;
-	padding: 10px 4px;
+	left: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	writing-mode: vertical-rl;
+	padding: 10px 3px;
 }
 
 #zoom-level-display {
@@ -1181,6 +1182,40 @@ button#zoom-out1 {
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 1px;
+}
+
+/* Compass size control */
+.compass-size-control {
+	margin-top: 12px;
+	padding: 10px 12px;
+	background: rgba(255, 255, 255, 0.06);
+	border-radius: 8px;
+}
+
+.compass-size-control label {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.compass-size-control #compass-size-value {
+	color: #4d94c5;
+	font-weight: 700;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.compass-size-control input[type="range"] {
+	width: 100%;
+	margin: 0;
+	cursor: pointer;
+	accent-color: #4d94c5;
 }
 
 /* Resize handle for logo placeholder */

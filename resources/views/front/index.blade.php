@@ -7,12 +7,12 @@
     <div id="zoom-level-display">Zoom Level: <span id='zoom_count'>4</span></div>
     <div id="map-container">
         <div id="overlay-container">
-            <div id="preview-overlay">
-                <div id="overlay-width" class="overlay-width">Width: </div>
-                <div id="overlay-height" class="overlay-height">Height: </div>
-            </div>
+            <div id="preview-overlay"></div>
         </div>
     </div>
+    {{-- Dimension readouts live on the map's outer edges so they never sit over the design --}}
+    <div id="overlay-width" class="overlay-width">Width: </div>
+    <div id="overlay-height" class="overlay-height">Height: </div>
 </div>
 <nav id="menu">
     <button class="toggle_menu"><i class="fa-solid fa-bars"></i></button>
@@ -61,26 +61,11 @@
         <div class="hi_box">
             <h1 class="heading">3. ADD TEXT</h1>
             <input type="text" id="title-input" placeholder="Enter your text (e.g. The Parsons)">
-            <div class="form-group gap_5">
-                <select id="font-select" onchange="changeFont()">
-                    <option value="CopperplateDefault">Copperplate</option>
-                    <option value="Arial, sans-serif">Arial</option>
-                    <option value="'Times New Roman', serif">Times New Roman</option>
-                    <option value="Georgia, serif">Georgia</option>
-                    <option value="'EB Garamond', serif">Garamond</option>
-                    <option value="'Playfair Display', serif">Playfair Display</option>
-                    <option value="'Montserrat', sans-serif">Montserrat</option>
-                    <option value="'Raleway', sans-serif">Raleway</option>
-                    <option value="'Merriweather', serif">Merriweather</option>
-                    <option value="'Lato', sans-serif">Lato</option>
-                    <option value="'Roboto', sans-serif">Roboto</option>
-                    <option value="'Poppins', sans-serif">Poppins</option>
-                </select>
-            </div>
             <input type="hidden" id="title-font" value="1">
             <input type="hidden" id="font-size" value="16">
             <button id="add-title">Add Text to Map</button>
-            <p class="size-hint">After adding, drag to position &amp; resize with corner handle</p>
+            <p class="size-hint">Text is set in Copperplate. After adding, drag to position &amp; resize with the
+                corner handle.</p>
         </div>
         <div id="added-titles"></div>
 
@@ -105,6 +90,12 @@
                 </a>
             </div>
             <p class="size-hint">Click multiple times to add more. Right-click a marker to remove it.</p>
+
+            {{-- COMPASS SIZE --}}
+            <div class="compass-size-control">
+                <label for="compass-size">Compass size <span id="compass-size-value">120px</span></label>
+                <input type="range" id="compass-size" min="40" max="400" step="5" value="120">
+            </div>
 
             {{-- LOGO UPLOAD --}}
             <div class="logo-upload-section">
@@ -140,7 +131,7 @@
 
         {{-- STEP 6: SAVE --}}
         <div class="hi_box hi_box_save">
-            <h1 class="heading">6. SAVE &amp; GET PRICE</h1>
+            <h1 class="heading">5. SAVE &amp; GET PRICE</h1>
             <a id="downloadLink" href="#" class="save-map-btn">
                 <i class="fa-solid fa-floppy-disk"></i> Save Map &amp; View Price
             </a>
