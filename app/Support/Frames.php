@@ -183,9 +183,9 @@ class Frames
         $derivative = $variant . '/' . self::slug($file) . '.jpg';
 
         if (is_file(public_path('frames/' . $derivative))) {
-            return url('frames/' . $derivative);
+            return asset('frames/' . $derivative);
         }
 
-        return url('frames/' . rawurlencode($file));
+        return asset('frames/' . rawurlencode($file));
     }
 }
