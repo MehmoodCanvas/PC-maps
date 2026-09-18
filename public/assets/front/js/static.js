@@ -343,7 +343,7 @@ function createCustomMarker(iconClass) {
 const iconMarkers = [];
 
 // Compass marker (single instance, toggle behavior)
-const compassimage = '/public/assets/front/images/compass.png';
+const compassimage = (window.PCMAPS_ASSETS || '/public/assets/front') + '/images/compass.png';
 const compassEl = document.createElement('div');
 compassEl.className = 'custom-marker compass-marker-container';
 compassEl.style.width = '120px';
@@ -524,23 +524,24 @@ document.getElementById('logo-file-input').addEventListener('change', function (
     fetch('/upload-logo', {
         method: 'POST',
         headers: {
+            'Accept': 'application/json',
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         body: formData
     })
-        .then(res => res.json())
+        .then(readJsonResponse)
         .then(data => {
             if (data.success) {
                 uploadedLogoFilename = data.filename;
                 addLogoPlaceholder(data.url);
             } else {
-                alert('Upload failed: ' + (data.message || 'Unknown error'));
+                alert('Upload failed: ' + (data.message || data.error || 'Unknown error'));
                 resetLogoUI();
             }
         })
         .catch(err => {
             console.error('Logo upload error:', err);
-            alert('Failed to upload logo. Please try again.');
+            alert(err.userMessage || ('Failed to upload logo. ' + err.message));
             resetLogoUI();
         });
 });
@@ -741,6 +742,8 @@ function createCustomMarker1(iconClass, title, font) {
         titleElement.style.userSelect = 'none';
         titleElement.style.transition = 'border-color 0.15s ease';
         titleElement.style.whiteSpace = 'nowrap';
+        // White text sits on top of arbitrary map colours; keep it readable.
+        titleElement.style.textShadow = '0 1px 3px rgba(0,0,0,0.65)';
         const newHeight = titleElement.scrollHeight;
         titleElement.style.height = newHeight + 'px';
         wrapper.appendChild(titleElement);
@@ -1072,8 +1075,6 @@ $('#downloadLink').click(function () {
 
         // Wait for all images to load before saving
         Promise.all(imageLoadPromises).then(() => {
-            console.log('All images loaded, saving canvas');
-            const dataURL = captureCanvas.toDataURL('image/png', 1.0);
             const input_widthInches = parseFloat(document.getElementById('width-inches').value);
             const input_heightInches = parseFloat(document.getElementById('height-inches').value);
             const final_count = window.count;
@@ -1082,47 +1083,73 @@ $('#downloadLink').click(function () {
             const addons = document.getElementById('add-on').checked;
             const frameValue = document.getElementById('frame_style') ? document.getElementById('frame_style').value : 'none';
 
-            // Show loading overlay
-            var loadingEl = document.getElementById('save-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
+            if (document.getElementById('save-loading')) {
+                document.getElementById('save-loading').style.display = 'flex';
+            }
 
-            fetch('/save-image', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                body: JSON.stringify({
-                    image: dataURL,
-                    width: input_widthInches,
-                    height: input_heightInches,
-                    text: final_count,
-                    compass: compass,
-                    addons: addons,
-                    frame_style: frameValue,
-                    logo_filename: uploadedLogoFilename || null,
-                    logo_position: getLogoPositionData(),
-                    lat: map.getCenter().lat,
-                    lng: map.getCenter().lng
+            function hideLoading() {
+                var el = document.getElementById('save-loading');
+                if (el) el.style.display = 'none';
+            }
+
+            // Sent as a binary upload rather than a base64 data URL: the encoded
+            // form is about a third larger, and building it as one JSON string
+            // pushed large prints towards the server's request size limit.
+            captureCanvas.toBlob(function (blob) {
+                if (!blob) {
+                    hideLoading();
+                    alert('The map image could not be rendered. Please try again.');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('image', blob, 'map.png');
+                formData.append('width', input_widthInches);
+                formData.append('height', input_heightInches);
+                formData.append('text', final_count || '');
+                formData.append('compass', compass ? 1 : 0);
+                formData.append('addons', addons ? 1 : 0);
+                formData.append('frame_style', frameValue);
+                formData.append('lat', map.getCenter().lat);
+                formData.append('lng', map.getCenter().lng);
+
+                if (uploadedLogoFilename) {
+                    formData.append('logo_filename', uploadedLogoFilename);
+                }
+
+                const logoPosition = getLogoPositionData();
+
+                if (logoPosition) {
+                    formData.append('logo_position', logoPosition);
+                }
+
+                fetch('/save-image', {
+                    method: 'POST',
+                    headers: {
+                        // Accept matters: without it Laravel renders errors as an
+                        // HTML page, which surfaced here as a parse failure.
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    body: formData
                 })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Image saved successfully', data);
-                    // Hide loading overlay
-                    var loadingEl = document.getElementById('save-loading');
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    if (data.map_id) {
-                        window.location.href = '/map-detail?id=' + data.map_id;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error saving image:', error);
-                    // Hide loading overlay on error too
-                    var loadingEl = document.getElementById('save-loading');
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    alert('Error saving map. Please try again.');
-                });
+                    .then(readJsonResponse)
+                    .then(function (data) {
+                        hideLoading();
+
+                        if (data.map_id) {
+                            window.location.href = '/map-detail?id=' + data.map_id;
+                            return;
+                        }
+
+                        alert('The map could not be saved: ' + (data.message || data.error || 'unknown error'));
+                    })
+                    .catch(function (error) {
+                        console.error('Error saving image:', error);
+                        hideLoading();
+                        alert(error.userMessage || ('Error saving map. ' + error.message));
+                    });
+            }, 'image/png');
         });
     } else {
         alert('Overlay container has invalid dimensions.');
@@ -1152,5 +1179,37 @@ document.getElementById('zoom-in').addEventListener('click', () => {
 document.getElementById('zoom-out').addEventListener('click', () => {
     map.zoomOut();
 });
+
+/**
+ * Reads a JSON response, turning the non-JSON failures this app actually hits
+ * (expired session, request too large, PHP error pages) into clear messages.
+ */
+function readJsonResponse(response) {
+    return response.text().then(function (body) {
+        var data = null;
+
+        try {
+            data = JSON.parse(body);
+        } catch (e) {
+            data = null;
+        }
+
+        if (response.ok && data) {
+            return data;
+        }
+
+        var error = new Error('HTTP ' + response.status + ' ' + body.slice(0, 200));
+
+        if (response.status === 401 || response.status === 419) {
+            error.userMessage = 'Your session has expired. Please sign in again in another tab, then save once more - your design is still on screen.';
+        } else if (response.status === 413) {
+            error.userMessage = 'This map is too large to upload. Try a smaller size and save again.';
+        } else if (data && (data.message || data.error)) {
+            error.userMessage = 'The map could not be saved: ' + (data.message || data.error);
+        }
+
+        throw error;
+    });
+}
 
 // Frame selection and sidebars are now handled on map-detail page

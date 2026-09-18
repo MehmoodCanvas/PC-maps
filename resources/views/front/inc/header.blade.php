@@ -17,6 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <link href='https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.css' rel='stylesheet' />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>window.PCMAPS_ASSETS = "{{ asset('assets/front') }}";</script>
 <style>
     
 </style>

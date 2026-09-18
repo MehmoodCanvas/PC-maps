@@ -664,7 +664,9 @@ button#zoom-out1 {
 	transform: translateY(-1px);
 }
 
+.embellishment-btn:hover i,
 .embellishment-btn.active-embellishment i {
+	/* The idle icon colour is the hover background, so it must flip here. */
 	color: #fff;
 }
 
@@ -1145,7 +1147,8 @@ button#zoom-out1 {
 
 /* Logo Placeholder Box on Map */
 .logo-placeholder-marker {
-	position: relative;
+	/* Mapbox positions markers; relative here drops them out of the map. */
+	position: absolute;
 	width: 120px;
 	height: 80px;
 	border: 2px dashed #4d94c5;
@@ -1270,7 +1273,8 @@ button#zoom-out1 {
 
 /* Compass Resizable Container */
 .compass-marker-container {
-	position: relative;
+	/* Mapbox positions markers; relative here drops them out of the map. */
+	position: absolute;
 	border: 2px dashed transparent;
 	transition: border-color 0.2s;
 }

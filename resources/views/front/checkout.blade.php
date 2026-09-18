@@ -274,7 +274,7 @@
                             <div class="map-image">
                                 @php $checkoutSwatch = \App\Support\Frames::swatchUrl($maps->map_frame); @endphp
                                 <div class="pframe" @if($checkoutSwatch) data-frame-swatch="{{$checkoutSwatch}}" @endif>
-                                    <img src="{{$maps->map_data}}" alt="Map Preview">
+                                    <img src="{{asset('storage/images/maps/' . $maps->map_image)}}" alt="Map Preview">
                                 </div>
                             </div>
                             <div class="map-details">

@@ -788,7 +788,7 @@
                                 @forelse ($orders as $order)
                                 <tr>
                                     <td style="font-weight:600;">#{{$order->order_invoice_id}}</td>
-                                    <td><img src="{{$order->map_data}}" alt="Map" class="map-thumb"></td>
+                                    <td><img src="{{asset('storage/images/maps/' . $order->map_image)}}" alt="Map" class="map-thumb"></td>
                                     <td style="font-weight:700;color:#1a1a2e;">${{number_format($order->order_total_amount, 2)}}</td>
                                     <td>
                                         @php
@@ -839,7 +839,7 @@
                             <tbody>
                                 @forelse ($maps as $map)
                                 <tr>
-                                    <td><img src="{{$map->map_data}}" class="map-thumb" alt="Map"></td>
+                                    <td><img src="{{asset('storage/images/maps/' . $map->map_image)}}" class="map-thumb" alt="Map"></td>
                                     <td>{{$map->map_width}}"</td>
                                     <td>{{$map->map_height}}"</td>
                                     <td style="font-weight:700;color:#1a1a2e;">${{number_format($map->map_price, 2)}}</td>

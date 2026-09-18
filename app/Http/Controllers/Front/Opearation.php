@@ -23,7 +23,7 @@ class Opearation extends Controller
     public function save(Request $request){
         try{
         $validatedData = $request->validate([
-            'image' => 'required|string',
+            'image' => 'required',
             'width' => 'required|numeric',
             'height' => 'required|numeric',
             'text' => 'nullable',
@@ -61,12 +61,24 @@ class Opearation extends Controller
 
         $total = $mapBaseCost + $text + $compass + $addons + $frameCost;
     
-        $image = str_replace('data:image/png;base64,', '', $data);
-        $image = str_replace(' ', '+', $image);
-        $imageData = base64_decode($image);
+        // The builder posts the render as a binary upload. Older cached copies
+        // of static.js still send a base64 data URL, so both are accepted.
+        $upload = $request->file('image');
+
+        if ($upload) {
+            $imageData = file_get_contents($upload->getRealPath());
+        } else {
+            $encoded = preg_replace('#^data:image/\w+;base64,#', '', (string) $data);
+            $imageData = base64_decode(str_replace(' ', '+', $encoded));
+        }
+
+        if (empty($imageData)) {
+            return response()->json(['error' => 'The map image was empty'], 422);
+        }
 
         $map->map_unqiue_id=Str::uuid();
-        $map->map_data=$data;
+        // The rendered PNG on disk is the record; map_data is legacy.
+        $map->map_data = '';
         $map->map_width=$width;
         $map->map_height=$height;
         $map->map_price=$total;
