@@ -100,31 +100,93 @@ document.getElementById('fly').addEventListener('click', () => {
     }
 });
 
-document.getElementById('location-input').addEventListener('input', function () {
-    const query = this.value;
-    const suggestionsContainer = document.getElementById('location-suggestions');
+const locationInput = document.getElementById('location-input');
+const suggestionsContainer = document.getElementById('location-suggestions');
 
+// Every keystroke starts a lookup; only the newest may touch the box, or a
+// slow reply for "Lo" could overwrite the completion for "Lon".
+let locationLookup = 0;
+let completedLocation = null;
+
+function fillCoordinates(feature) {
+    document.getElementById('latitude').value = feature.center[1];
+    document.getElementById('longitude').value = feature.center[0];
+}
+
+function chooseLocation(feature) {
+    locationLookup++;
+    completedLocation = null;
+    locationInput.value = feature.place_name;
+    fillCoordinates(feature);
+    suggestionsContainer.innerHTML = '';
+
+    // Re-assigning the same text keeps the completion highlighted.
+    if (document.activeElement === locationInput) {
+        locationInput.setSelectionRange(feature.place_name.length, feature.place_name.length);
+    }
+}
+
+// Fills in the rest of the first place whose name starts with what was typed,
+// selected so that carrying on typing simply replaces it.
+function completeLocation(query, features) {
+    const caretAtEnd = locationInput.selectionStart === query.length
+        && locationInput.selectionEnd === query.length;
+
+    if (document.activeElement !== locationInput || locationInput.value !== query || !caretAtEnd) {
+        return;
+    }
+
+    const match = features.find((feature) => feature.place_name.toLowerCase().startsWith(query.toLowerCase()));
+
+    if (!match) {
+        return;
+    }
+
+    completedLocation = match;
+    locationInput.value = match.place_name;
+    locationInput.setSelectionRange(query.length, match.place_name.length);
+    fillCoordinates(match);
+}
+
+locationInput.addEventListener('input', function (e) {
+    const query = this.value;
+    const lookup = ++locationLookup;
+    // Completing straight after a backspace would put back what was deleted.
+    const deleting = e.inputType ? e.inputType.startsWith('delete') : false;
+
+    completedLocation = null;
     suggestionsContainer.innerHTML = '';
 
     if (query) {
-        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=pk.eyJ1Ijoia2VpdGhlcmljcGFyc29uczc3IiwiYSI6ImNsZ2syeG96NzA5MWwzam00aW05ejkwaHIifQ.t6aEapdsBtJZwzk5Xxw4Dg&types=place,postcode`)
+        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=pk.eyJ1Ijoia2VpdGhlcmljcGFyc29uczc3IiwiYSI6ImNsZ2syeG96NzA5MWwzam00aW05ejkwaHIifQ.t6aEapdsBtJZwzk5Xxw4Dg&types=place,postcode`)
             .then((response) => response.json())
             .then((data) => {
-                if (data.features) {
-                    data.features.forEach((feature) => {
-                        const suggestionItem = document.createElement('div');
-                        suggestionItem.textContent = feature.place_name;
-                        suggestionItem.classList.add('suggestion-item');
-                        suggestionItem.addEventListener('click', function () {
-                            const coordinates = feature.center;
-                            document.getElementById('latitude').value = coordinates[1];
-                            document.getElementById('longitude').value = coordinates[0];
-                            suggestionsContainer.innerHTML = '';
-                        });
-                        suggestionsContainer.appendChild(suggestionItem);
+                if (lookup !== locationLookup || !data.features) {
+                    return;
+                }
+
+                data.features.forEach((feature) => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.textContent = feature.place_name;
+                    suggestionItem.classList.add('suggestion-item');
+                    suggestionItem.addEventListener('click', function () {
+                        chooseLocation(feature);
                     });
+                    suggestionsContainer.appendChild(suggestionItem);
+                });
+
+                if (!deleting) {
+                    completeLocation(query, data.features);
                 }
             });
+    }
+});
+
+// Enter accepts the filled-in name.
+locationInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && completedLocation) {
+        e.preventDefault();
+        chooseLocation(completedLocation);
     }
 });
 
@@ -161,37 +223,46 @@ map.on('load', () => {
     map.moveLayer('roads', 'road-label-simple');
     map.setLayoutProperty('road-label-simple', 'visibility', 'none');
 
-    // Detail the style holds back until zoom 11 should appear from 10.60 instead.
-    var DETAIL_FROM = 10.60;
-
-    // Only ever lowers a layer's minzoom. Assigning the floor unconditionally
-    // would hide layers that already draw below it.
-    function revealFrom(layer, floor) {
-        var minzoom = typeof layer.minzoom === 'number' ? layer.minzoom : 0;
-
-        if (minzoom <= floor) {
-            return;
-        }
-
-        map.setLayerZoomRange(layer.id, floor, typeof layer.maxzoom === 'number' ? layer.maxzoom : 24);
-    }
-
     map.getStyle().layers.forEach(function (layer) {
         // Hide ferry routes
         if (layer.id.includes('ferry')) {
             map.setLayoutProperty(layer.id, 'visibility', 'none');
-            return;
-        }
-
-        var isRoadDetail = layer.id.includes('road-street')
-            || layer.id.includes('road-minor')
-            || layer.id.includes('road-label');
-
-        // Anything gated at roughly zoom 11, plus the street layers by name.
-        if (isRoadDetail || (typeof layer.minzoom === 'number' && layer.minzoom <= 11)) {
-            revealFrom(layer, DETAIL_FROM);
         }
     });
+
+    // Streets should show from 10.60 rather than 11.
+    var STREETS_FROM = 10.60;
+
+    // Mapbox only ships street roads in zoom 11+ tiles, and a vector source
+    // fetches the tiles for the floored zoom, so below 11 there is no street
+    // data to draw whatever the style says. This source rounds the zoom
+    // instead, as Mapbox's raster sources do, so it has zoom 11 tiles from
+    // 10.5. roundZoom is a Mapbox GL internal (checked against v1.13.1).
+    map.addSource('early-streets', {
+        type: 'vector',
+        url: 'mapbox://mapbox.mapbox-streets-v8'
+    });
+    map.getSource('early-streets').roundZoom = true;
+
+    // Drawn like the 'roads' layer, which shows these same streets from 11.
+    map.addLayer({
+        'id': 'early-streets',
+        'type': 'line',
+        'source': 'early-streets',
+        'source-layer': 'road',
+        'minzoom': STREETS_FROM,
+        // Mapbox drops a layer from tiles at or above its maxzoom, and these
+        // tiles are zoom 11, so the hand-over at 11 is done with opacity.
+        'maxzoom': 11.5,
+        'filter': ['match', ['get', 'class'], ['street', 'street_limited'], true, false],
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-opacity': ['step', ['zoom'], 1, 11, 0]
+        }
+    }, 'roads');
 
 
 
